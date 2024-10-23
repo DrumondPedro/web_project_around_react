@@ -1,0 +1,28 @@
+.page {
+  margin: 0 auto;
+  max-width: 1280px;
+}
+
+@media screen and (max-width: 1060px) {
+  .page {
+    padding: 0 90px 0;
+  }
+}
+
+@media screen and (max-width: 950px) {
+  .page {
+    padding: 0 45px 0;
+  }
+}
+
+@media screen and (max-width: 671px) {
+  .page {
+    padding: 0 27px 0;
+  }
+}
+
+@media screen and (max-width: 440px) {
+  .page {
+    padding: 0;
+  }
+}

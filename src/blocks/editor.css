@@ -1,0 +1,76 @@
+.editor {
+  position: fixed;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+.editor_visible {
+  display: block;
+}
+
+.editor__content {
+  background-color: #fff;
+  max-width: 430px;
+  max-height: 330px;
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0px 0px 25px 0px #00000026;
+  padding: 34px 36px 36.51px;
+  margin: 195px auto 0;
+  position: relative;
+}
+
+.editor__close-button {
+  border: none;
+  background-color: transparent;
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  top: -36px;
+  right: -36px;
+}
+
+.editor__close-button:hover {
+  cursor: pointer;
+  opacity: 60%;
+}
+
+.editor__close-image {
+  width: 32px;
+  height: 32px;
+}
+
+.editor__title {
+  font-size: 24px;
+  line-height: 29.05px;
+  font-weight: 900;
+}
+
+@media screen and (max-width: 635px) {
+  .editor__content {
+    max-width: 282px;
+    max-height: 322px;
+    padding: 25px 22px;
+    margin: 123px auto 0;
+  }
+
+  .editor__close-button {
+    width: 21px;
+    height: 21px;
+    top: -57px;
+    right: 8px;
+  }
+
+  .editor__close-image {
+    width: 21px;
+    height: 21px;
+  }
+
+  .editor__title {
+    font-size: 18px;
+    line-height: 21.78px;
+  }
+}
