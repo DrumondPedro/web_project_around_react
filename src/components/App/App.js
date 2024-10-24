@@ -2,6 +2,7 @@ import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import Main from '../Main/Main';
 import PopupWithForm from '../PopupWithForm/PopupWithForm';
+import ImagePopup from '../ImagePopup/ImagePopup';
 
 function App() {
   return (
@@ -86,6 +87,10 @@ function App() {
             </label>
           </fieldset>
         </PopupWithForm>
+        <ImagePopup
+          link={`https://images.unsplash.com/photo-1719937206498-b31844530a96?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D`}
+          name={`Teste`}
+        ></ImagePopup>
       </div>
     </>
   );
