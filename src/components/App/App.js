@@ -3,6 +3,7 @@ import Footer from '../Footer/Footer';
 import Main from '../Main/Main';
 import PopupWithForm from '../PopupWithForm/PopupWithForm';
 import ImagePopup from '../ImagePopup/ImagePopup';
+import Card from '../Card/Card';
 
 function App() {
   return (
@@ -11,10 +12,13 @@ function App() {
         <div className='page'>
           <Header />
           <Main>
-            {/* {[1, 2, 3, 4, 5].map((num, i) => (
-              <li key={i} style={{ color: 'white', height: 200, width: 200 }}>
-                <p>{`Olá numero ${num}`}</p>
-              </li>
+            {/* {cards.map((card, i) => (
+              <Card
+                key={i}
+                link={card.link}
+                name={card.name}
+                counter={card.likes.length}
+              ></Card>
             ))} */}
           </Main>
           <Footer />
