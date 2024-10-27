@@ -2,19 +2,21 @@ import loadingPhoto from '../../images/profile/profile_loading_photo.png';
 import pencilPath from '../../images/profile/profile_edit_button.svg';
 import plusPath from '../../images/profile/profile_add_button.svg';
 
-function Main({ children }) {
+function Main({ user, children }) {
   return (
     <main className='content'>
       <section className='profile'>
         <button className='profile__picture-edit-button'></button>
         <img
-          src={loadingPhoto}
+          src={user.avatar ? user.avatar : loadingPhoto}
           alt='Imagem de perfil do usuário.'
           className='profile__picture'
         />
         <div className='profile__personal-information'>
           <div className='profile__personal-title'>
-            <h1 className='profile__name'>...</h1>
+            <h1 className='profile__name'>
+              {user.name ? `${user.name}` : `...`}
+            </h1>
             <button className='profile__edit-button'>
               <img
                 src={pencilPath}
@@ -23,7 +25,9 @@ function Main({ children }) {
               />
             </button>
           </div>
-          <p className='profile__about'>...</p>
+          <p className='profile__about'>
+            {user.about ? `${user.about}` : '...'}
+          </p>
         </div>
         <button className='profile__add-button'>
           <img

@@ -55,7 +55,7 @@ function App() {
       <div className='body'>
         <div className='page'>
           <Header />
-          <Main>
+          <Main user={user}>
             {cardsList.map((card, i) => (
               <Card key={i} card={card} userId={user._id}></Card>
             ))}
