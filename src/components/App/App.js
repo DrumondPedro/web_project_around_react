@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import Main from '../Main/Main';
@@ -5,7 +7,29 @@ import PopupWithForm from '../PopupWithForm/PopupWithForm';
 import ImagePopup from '../ImagePopup/ImagePopup';
 import Card from '../Card/Card';
 
+import client from '../../utils/api';
+
 function App() {
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    client
+      .getUserInfo('/users/me')
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Error: ${res.status}`);
+      })
+      .then((data) => {
+        setUser(data);
+      })
+      .catch((err) => {
+        console.log(err);
+        console.log('Erro no GET /users/me');
+      });
+  }, []);
+
   return (
     <>
       <div className='body'>
