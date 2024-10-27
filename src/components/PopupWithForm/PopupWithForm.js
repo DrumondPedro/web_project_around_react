@@ -1,10 +1,13 @@
 import closeIcon from '../../images/editor/editor_close_Icon.svg';
 
-function PopupWithForm({ children, title, name }) {
+function PopupWithForm({ children, title, name, isOpen, onClose }) {
   return (
-    <div className={`editor editor_${name}`}>
+    <div className={`editor editor_${name} ${isOpen ? `editor_visible` : ''}`}>
       <div className='editor__content'>
-        <button className={`editor__close-button editor__${name}-close-button`}>
+        <button
+          className={`editor__close-button editor__${name}-close-button`}
+          onClick={onClose}
+        >
           <img
             src={closeIcon}
             alt='Ícone de um x'

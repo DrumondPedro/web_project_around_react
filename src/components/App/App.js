@@ -12,6 +12,9 @@ import client from '../../utils/api';
 function App() {
   const [user, setUser] = useState({});
   const [cardsList, setCardsList] = useState([]);
+  const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
+  const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
+  const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
 
   useEffect(() => {
     client
@@ -50,19 +53,47 @@ function App() {
       });
   }, []);
 
+  function handleEditProfileClick() {
+    setEditProfilePopupOpen(true);
+  }
+
+  function handleAddPlaceClick() {
+    setAddPlacePopupOpen(true);
+  }
+
+  function handleEditAvatarClick() {
+    setEditAvatarPopupOpen(true);
+  }
+
+  function closeAllPopups() {
+    setEditProfilePopupOpen(false);
+    setAddPlacePopupOpen(false);
+    setEditAvatarPopupOpen(false);
+  }
+
   return (
     <>
       <div className='body'>
         <div className='page'>
           <Header />
-          <Main user={user}>
+          <Main
+            user={user}
+            onEditProfileClick={handleEditProfileClick}
+            onAddPlaceClick={handleAddPlaceClick}
+            onEditAvatarClick={handleEditAvatarClick}
+          >
             {cardsList.map((card, i) => (
               <Card key={i} card={card} userId={user._id}></Card>
             ))}
           </Main>
           <Footer />
         </div>
-        <PopupWithForm title={`Editar perfil`} name={`profile`}>
+        <PopupWithForm
+          title={`Editar perfil`}
+          name={`profile`}
+          isOpen={isEditProfilePopupOpen}
+          onClose={closeAllPopups}
+        >
           <fieldset className='form__set'>
             <label className='form__field'>
               <input
@@ -90,7 +121,12 @@ function App() {
             </label>
           </fieldset>
         </PopupWithForm>
-        <PopupWithForm title={`Novo local`} name={`gallery`}>
+        <PopupWithForm
+          title={`Novo local`}
+          name={`gallery`}
+          isOpen={isAddPlacePopupOpen}
+          onClose={closeAllPopups}
+        >
           <fieldset className='form__set'>
             <label className='form__field'>
               <input
@@ -116,7 +152,12 @@ function App() {
             </label>
           </fieldset>
         </PopupWithForm>
-        <PopupWithForm title={`Alterar a foto do perfil`} name={`picture`}>
+        <PopupWithForm
+          title={`Alterar a foto do perfil`}
+          name={`picture`}
+          isOpen={isEditAvatarPopupOpen}
+          onClose={closeAllPopups}
+        >
           <fieldset className='form__set'>
             <label className='form__field'>
               <input

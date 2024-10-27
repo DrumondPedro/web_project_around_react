@@ -2,11 +2,20 @@ import loadingPhoto from '../../images/profile/profile_loading_photo.png';
 import pencilPath from '../../images/profile/profile_edit_button.svg';
 import plusPath from '../../images/profile/profile_add_button.svg';
 
-function Main({ user, children }) {
+function Main({
+  user,
+  children,
+  onEditAvatarClick,
+  onEditProfileClick,
+  onAddPlaceClick,
+}) {
   return (
     <main className='content'>
       <section className='profile'>
-        <button className='profile__picture-edit-button'></button>
+        <button
+          className='profile__picture-edit-button '
+          onClick={onEditAvatarClick}
+        ></button>
         <img
           src={user.avatar ? user.avatar : loadingPhoto}
           alt='Imagem de perfil do usuário.'
@@ -17,7 +26,10 @@ function Main({ user, children }) {
             <h1 className='profile__name'>
               {user.name ? `${user.name}` : `...`}
             </h1>
-            <button className='profile__edit-button'>
+            <button
+              className='profile__edit-button'
+              onClick={onEditProfileClick}
+            >
               <img
                 src={pencilPath}
                 alt='Ícone minimalista de um lápis'
@@ -29,7 +41,7 @@ function Main({ user, children }) {
             {user.about ? `${user.about}` : '...'}
           </p>
         </div>
-        <button className='profile__add-button'>
+        <button className='profile__add-button' onClick={onAddPlaceClick}>
           <img
             src={plusPath}
             alt='Ícone de um sinal de mais'
