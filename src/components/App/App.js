@@ -11,6 +11,7 @@ import client from '../../utils/api';
 
 function App() {
   const [user, setUser] = useState({});
+  const [cardsList, setCardsList] = useState([]);
 
   useEffect(() => {
     client
@@ -30,20 +31,34 @@ function App() {
       });
   }, []);
 
+  useEffect(() => {
+    client
+      .getInitialCards('/cards')
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Error: ${res.status}`);
+      })
+      .then((data) => {
+        setCardsList(data);
+      })
+      .catch((err) => {
+        console.log(err);
+        console.log('Erro no GET /cards');
+        setCardsList([]);
+      });
+  }, []);
+
   return (
     <>
       <div className='body'>
         <div className='page'>
           <Header />
           <Main>
-            {/* {cards.map((card, i) => (
-              <Card
-                key={i}
-                link={card.link}
-                name={card.name}
-                counter={card.likes.length}
-              ></Card>
-            ))} */}
+            {cardsList.map((card, i) => (
+              <Card key={i} card={card} userId={user._id}></Card>
+            ))}
           </Main>
           <Footer />
         </div>

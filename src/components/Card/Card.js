@@ -1,24 +1,26 @@
 import deleteButton from '../../images/gallery/gallery_card_delete_button.svg';
 
-function Card({ link, name, counter }) {
+function Card({ card, userId }) {
   return (
     <li className='gallery__card'>
       <img
         src={deleteButton}
         alt='Ícone de uma lixeira'
-        className='gallery__card-delete-button'
+        className={`gallery__card-delete-button ${
+          card.owner._id === userId ? `gallery__card-delete-button-visible` : ''
+        }`}
       />
-      <img className='gallery__card-image' src={link} alt={name} />
+      <img className='gallery__card-image' src={card.link} alt={card.name} />
       <div className='gallery__card-information'>
-        <p className='gallery__card-name '>{name}</p>
+        <p className='gallery__card-name '>{card.name}</p>
         <div className='gallery__card-like-content'>
           <button
             className={`gallery__card-like-button ${
-              counter ? 'gallery__card-like-button-active' : ''
+              card.likes.length ? 'gallery__card-like-button-active' : ''
             }`}
           ></button>
           <p className='gallery__card-like-counter'>
-            {counter ? counter : '0'}
+            {card.likes.length ? card.likes.length : '0'}
           </p>
         </div>
       </div>
