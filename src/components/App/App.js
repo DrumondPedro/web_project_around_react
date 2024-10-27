@@ -11,10 +11,16 @@ import client from '../../utils/api';
 
 function App() {
   const [user, setUser] = useState({});
+
   const [cardsList, setCardsList] = useState([]);
+
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
+
+  const [profileData, setProfileData] = useState({ name: '', about: '' });
+  const [galleryData, setGalleryData] = useState({ title: '', link: '' });
+  const [picture, setPicture] = useState('');
 
   useEffect(() => {
     client
@@ -27,6 +33,7 @@ function App() {
       })
       .then((data) => {
         setUser(data);
+        setProfileData({ name: `${data.name}`, about: `${data.about}` });
       })
       .catch((err) => {
         console.log(err);
@@ -99,11 +106,15 @@ function App() {
               <input
                 type='text'
                 className='form__input form__input_name'
-                id='person'
+                id='name'
                 placeholder='Nome'
                 required
                 minength='2'
                 maxength='40'
+                value={profileData.name}
+                onChange={(evt) => {
+                  setProfileData({ ...profileData, name: evt.target.value });
+                }}
               />
               <span className='form__error person-error'></span>
             </label>
@@ -116,6 +127,10 @@ function App() {
                 required
                 minength='2'
                 maxength='200'
+                value={profileData.about}
+                onChange={(evt) => {
+                  setProfileData({ ...profileData, about: evt.target.value });
+                }}
               />
               <span className='form__error about-error'></span>
             </label>
@@ -132,11 +147,15 @@ function App() {
               <input
                 type='text'
                 className='form__input form__input_title'
-                id='name'
+                id='title'
                 placeholder='Título'
                 required
                 minLength='2'
                 maxLength='30'
+                value={galleryData.title}
+                onChange={(evt) => {
+                  setGalleryData({ ...galleryData, title: evt.target.value });
+                }}
               />
               <span className='form__error name-error'></span>
             </label>
@@ -147,6 +166,10 @@ function App() {
                 id='link'
                 placeholder='Link de imagem'
                 required
+                value={galleryData.link}
+                onChange={(evt) => {
+                  setGalleryData({ ...galleryData, link: evt.target.value });
+                }}
               />
               <span className='form__error link-error'></span>
             </label>
@@ -166,6 +189,10 @@ function App() {
                 id='picture'
                 placeholder='Link da foto'
                 required
+                value={picture}
+                onChange={(evt) => {
+                  setPicture(evt.target.value);
+                }}
               />
               <span className='form__error picture-error'></span>
             </label>
