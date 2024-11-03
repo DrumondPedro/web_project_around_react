@@ -59,7 +59,7 @@ class Api {
     });
   }
 
-  updateUserAvatar({ picture }, path) {
+  updateUserAvatar(picture, path) {
     return fetch(`${this._baseURL}${path}`, {
       method: 'PATCH',
       headers: {

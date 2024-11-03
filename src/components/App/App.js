@@ -72,6 +72,7 @@ function App() {
 
   function handleEditAvatarClick() {
     setEditAvatarPopupOpen(true);
+    setPicture('');
   }
 
   function closeAllPopups() {
@@ -87,6 +88,28 @@ function App() {
         { name: userFront.name, about: userFront.about },
         '/users/me'
       )
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Error: ${res.status}`);
+      })
+      .then((data) => {
+        setUser(data);
+        closeAllPopups();
+        setIsSavingPopupData(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        closeAllPopups();
+        setIsSavingPopupData(false);
+      });
+  }
+
+  function handlePicturePopupSubimit() {
+    setIsSavingPopupData(true);
+    client
+      .updateUserAvatar(picture, '/users/me/avatar')
       .then((res) => {
         if (res.ok) {
           return res.json();
@@ -208,7 +231,9 @@ function App() {
           name={`picture`}
           title={`Alterar a foto do perfil`}
           isOpen={isEditAvatarPopupOpen}
+          isSaving={isSavingPopupData}
           onClose={closeAllPopups}
+          handleApiRequest={handlePicturePopupSubimit}
         >
           <fieldset className='form__set'>
             <label className='form__field'>
