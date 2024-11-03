@@ -11,6 +11,7 @@ import client from '../../utils/api';
 
 function App() {
   const [user, setUser] = useState({});
+  const [userFront, setUserFront] = useState({});
 
   const [cardsList, setCardsList] = useState([]);
 
@@ -18,9 +19,10 @@ function App() {
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
 
-  const [profileData, setProfileData] = useState({ name: '', about: '' });
   const [galleryData, setGalleryData] = useState({ title: '', link: '' });
   const [picture, setPicture] = useState('');
+
+  const [isSavingPopupData, setIsSavingPopupData] = useState(false);
 
   useEffect(() => {
     client
@@ -33,7 +35,6 @@ function App() {
       })
       .then((data) => {
         setUser(data);
-        setProfileData({ name: `${data.name}`, about: `${data.about}` });
       })
       .catch((err) => {
         console.log(err);
@@ -62,6 +63,7 @@ function App() {
 
   function handleEditProfileClick() {
     setEditProfilePopupOpen(true);
+    setUserFront({ name: user.name, about: user.about });
   }
 
   function handleAddPlaceClick() {
@@ -76,6 +78,31 @@ function App() {
     setEditProfilePopupOpen(false);
     setAddPlacePopupOpen(false);
     setEditAvatarPopupOpen(false);
+  }
+
+  function handleProfilePopupSubimit() {
+    setIsSavingPopupData(true);
+    client
+      .updateUserInfo(
+        { name: userFront.name, about: userFront.about },
+        '/users/me'
+      )
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Error: ${res.status}`);
+      })
+      .then((data) => {
+        setUser(data);
+        closeAllPopups();
+        setIsSavingPopupData(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        closeAllPopups();
+        setIsSavingPopupData(false);
+      });
   }
 
   return (
@@ -96,10 +123,12 @@ function App() {
           <Footer />
         </div>
         <PopupWithForm
-          title={`Editar perfil`}
           name={`profile`}
+          title={`Editar perfil`}
           isOpen={isEditProfilePopupOpen}
+          isSaving={isSavingPopupData}
           onClose={closeAllPopups}
+          handleApiRequest={handleProfilePopupSubimit}
         >
           <fieldset className='form__set'>
             <label className='form__field'>
@@ -111,9 +140,9 @@ function App() {
                 required
                 minength='2'
                 maxength='40'
-                value={profileData.name}
+                value={userFront.name}
                 onChange={(evt) => {
-                  setProfileData({ ...profileData, name: evt.target.value });
+                  setUserFront({ ...userFront, name: evt.target.value });
                 }}
               />
               <span className='form__error person-error'></span>
@@ -127,9 +156,9 @@ function App() {
                 required
                 minength='2'
                 maxength='200'
-                value={profileData.about}
+                value={userFront.about}
                 onChange={(evt) => {
-                  setProfileData({ ...profileData, about: evt.target.value });
+                  setUserFront({ ...userFront, about: evt.target.value });
                 }}
               />
               <span className='form__error about-error'></span>
@@ -137,8 +166,8 @@ function App() {
           </fieldset>
         </PopupWithForm>
         <PopupWithForm
-          title={`Novo local`}
           name={`gallery`}
+          title={`Novo local`}
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
         >
@@ -176,8 +205,8 @@ function App() {
           </fieldset>
         </PopupWithForm>
         <PopupWithForm
-          title={`Alterar a foto do perfil`}
           name={`picture`}
+          title={`Alterar a foto do perfil`}
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
         >

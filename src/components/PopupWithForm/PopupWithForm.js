@@ -1,6 +1,19 @@
 import closeIcon from '../../images/editor/editor_close_Icon.svg';
 
-function PopupWithForm({ children, title, name, isOpen, onClose }) {
+function PopupWithForm({
+  children,
+  name,
+  title,
+  isOpen,
+  isSaving,
+  onClose,
+  handleApiRequest,
+}) {
+  function handleSubimit(evt) {
+    evt.preventDefault();
+    handleApiRequest();
+  }
+
   return (
     <div className={`editor editor_${name} ${isOpen ? `editor_visible` : ''}`}>
       <div className='editor__content'>
@@ -15,10 +28,20 @@ function PopupWithForm({ children, title, name, isOpen, onClose }) {
           />
         </button>
         <h2 className='editor__title'>{title}</h2>
-        <form className={`form form_${name} editor__form`} noValidate>
+        <form
+          onSubmit={handleSubimit}
+          className={`form form_${name} editor__form`}
+          noValidate
+        >
           {children}
-          <button type='submit' className='form__submit-button'>
-            Salvar
+          <button
+            type='submit'
+            disabled={isSaving}
+            className={`form__submit-button ${
+              isSaving ? 'form__submit-button-inactive' : ''
+            } `}
+          >
+            {`${isSaving ? 'Salvando...' : 'Salvar'}`}
           </button>
         </form>
       </div>

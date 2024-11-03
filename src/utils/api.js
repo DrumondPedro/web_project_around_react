@@ -13,7 +13,7 @@ class Api {
     });
   }
 
-  addNewCard({ name: cardName, link: cardLink }, path) {
+  addNewCard({ title: cardName, link: cardLink }, path) {
     return fetch(`${this._baseURL}${path}`, {
       method: 'POST',
       headers: {
@@ -45,7 +45,7 @@ class Api {
     });
   }
 
-  updateUserInfo({ person: userName, about: userAbout }, path) {
+  updateUserInfo({ name: userName, about: userAbout }, path) {
     return fetch(`${this._baseURL}${path}`, {
       method: 'PATCH',
       headers: {
