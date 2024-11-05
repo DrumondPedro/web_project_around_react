@@ -68,6 +68,7 @@ function App() {
 
   function handleAddPlaceClick() {
     setAddPlacePopupOpen(true);
+    setGalleryData({ title: '', link: '' });
   }
 
   function handleEditAvatarClick() {
@@ -100,9 +101,31 @@ function App() {
         setIsSavingPopupData(false);
       })
       .catch((err) => {
-        console.log(err);
         closeAllPopups();
         setIsSavingPopupData(false);
+        console.log(`${err} - Erro no PACH /users/me`);
+      });
+  }
+
+  function handleGalerryPopupSubimit() {
+    setIsSavingPopupData(true);
+    client
+      .addNewCard(galleryData, '/cards')
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Error: ${res.status}`);
+      })
+      .then((newCard) => {
+        setCardsList([newCard, ...cardsList]);
+        closeAllPopups();
+        setIsSavingPopupData(false);
+      })
+      .catch((err) => {
+        closeAllPopups();
+        setIsSavingPopupData(false);
+        console.log(`${err} - Erro no POST /cards`);
       });
   }
 
@@ -122,9 +145,9 @@ function App() {
         setIsSavingPopupData(false);
       })
       .catch((err) => {
-        console.log(err);
         closeAllPopups();
         setIsSavingPopupData(false);
+        console.log(`${err} - Erro no PATCH /users/me/avatar`);
       });
   }
 
@@ -192,7 +215,9 @@ function App() {
           name={`gallery`}
           title={`Novo local`}
           isOpen={isAddPlacePopupOpen}
+          isSaving={isSavingPopupData}
           onClose={closeAllPopups}
+          handleApiRequest={handleGalerryPopupSubimit}
         >
           <fieldset className='form__set'>
             <label className='form__field'>
