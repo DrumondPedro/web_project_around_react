@@ -18,11 +18,14 @@ function App() {
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
+  const [isImagePopupOpen, setImagePopupOpen] = useState(false);
 
   const [galleryData, setGalleryData] = useState({ title: '', link: '' });
   const [picture, setPicture] = useState('');
 
   const [isSavingPopupData, setIsSavingPopupData] = useState(false);
+
+  const [selectedCard, setSelectedCard] = useState({});
 
   useEffect(() => {
     client
@@ -76,10 +79,16 @@ function App() {
     setPicture('');
   }
 
+  function handleCardClick(card) {
+    setSelectedCard({ link: card.link, name: card.name });
+    setImagePopupOpen(true);
+  }
+
   function closeAllPopups() {
     setEditProfilePopupOpen(false);
     setAddPlacePopupOpen(false);
     setEditAvatarPopupOpen(false);
+    setImagePopupOpen(false);
   }
 
   function handleProfilePopupSubimit() {
@@ -190,6 +199,7 @@ function App() {
                 card={card}
                 userId={user._id}
                 onDelete={handleDeleteCard}
+                onCardClick={handleCardClick}
               ></Card>
             ))}
           </Main>
@@ -305,8 +315,9 @@ function App() {
           </fieldset>
         </PopupWithForm>
         <ImagePopup
-          link={`https://images.unsplash.com/photo-1719937206498-b31844530a96?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D`}
-          name={`Teste`}
+          card={selectedCard}
+          isOpen={isImagePopupOpen}
+          onClose={closeAllPopups}
         ></ImagePopup>
       </div>
     </>

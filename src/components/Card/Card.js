@@ -1,12 +1,16 @@
 import deleteButton from '../../images/gallery/gallery_card_delete_button.svg';
 
-function Card({ card, userId, onDelete }) {
+function Card({ card, userId, onDelete, onCardClick }) {
   function handleDelete() {
     if (card.owner._id === userId) {
       onDelete(card._id);
     } else {
       console.error('O usuário não é dono desse card');
     }
+  }
+
+  function handleClick() {
+    onCardClick(card);
   }
 
   return (
@@ -19,7 +23,12 @@ function Card({ card, userId, onDelete }) {
           card.owner._id === userId ? `gallery__card-delete-button-visible` : ''
         }`}
       />
-      <img className='gallery__card-image' src={card.link} alt={card.name} />
+      <img
+        onClick={handleClick}
+        className='gallery__card-image'
+        src={card.link}
+        alt={card.name}
+      />
       <div className='gallery__card-information'>
         <p className='gallery__card-name '>{card.name}</p>
         <div className='gallery__card-like-content'>
