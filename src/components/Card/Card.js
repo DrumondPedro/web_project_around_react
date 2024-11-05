@@ -1,9 +1,18 @@
 import deleteButton from '../../images/gallery/gallery_card_delete_button.svg';
 
-function Card({ card, userId }) {
+function Card({ card, userId, onDelete }) {
+  function handleDelete() {
+    if (card.owner._id === userId) {
+      onDelete(card._id);
+    } else {
+      console.error('O usuário não é dono desse card');
+    }
+  }
+
   return (
     <li className='gallery__card'>
       <img
+        onClick={handleDelete}
         src={deleteButton}
         alt='Ícone de uma lixeira'
         className={`gallery__card-delete-button ${

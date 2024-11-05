@@ -151,6 +151,28 @@ function App() {
       });
   }
 
+  function handleDeleteCard(cardId) {
+    setIsSavingPopupData(true);
+    client
+      .deleteCard(cardId, '/cards')
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Error: ${res.status}`);
+      })
+      .then(() => {
+        setCardsList(cardsList.filter((card) => card._id !== cardId));
+        closeAllPopups();
+        setIsSavingPopupData(false);
+      })
+      .catch((err) => {
+        closeAllPopups();
+        setIsSavingPopupData(false);
+        console.log(`${err} - Erro no DELETE /cards`);
+      });
+  }
+
   return (
     <>
       <div className='body'>
@@ -163,7 +185,12 @@ function App() {
             onEditAvatarClick={handleEditAvatarClick}
           >
             {cardsList.map((card, i) => (
-              <Card key={i} card={card} userId={user._id}></Card>
+              <Card
+                key={i}
+                card={card}
+                userId={user._id}
+                onDelete={handleDeleteCard}
+              ></Card>
             ))}
           </Main>
           <Footer />
