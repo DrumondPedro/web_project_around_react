@@ -1,6 +1,13 @@
 import deleteButton from '../../images/gallery/gallery_card_delete_button.svg';
 
-function Card({ card, userId, onDelete, onCardClick }) {
+function Card({
+  card,
+  userId,
+  onDelete,
+  onCardClick,
+  onDeslikeClick,
+  onLikeClick,
+}) {
   function handleDelete() {
     if (card.owner._id === userId) {
       onDelete(card._id);
@@ -9,8 +16,26 @@ function Card({ card, userId, onDelete, onCardClick }) {
     }
   }
 
-  function handleClick() {
+  function handleCardClick() {
     onCardClick(card);
+  }
+
+  function handleLikeButtonClick() {
+    if (
+      card.likes.find((element) => {
+        return element._id === userId;
+      })
+    ) {
+      onDeslikeClick(card._id, '/cards/likes', (res) => {
+        card = res;
+        console.log(card);
+      });
+    } else {
+      onLikeClick(card._id, '/cards/likes', (res) => {
+        card = res;
+        console.log(card);
+      });
+    }
   }
 
   return (
@@ -24,7 +49,7 @@ function Card({ card, userId, onDelete, onCardClick }) {
         }`}
       />
       <img
-        onClick={handleClick}
+        onClick={handleCardClick}
         className='gallery__card-image'
         src={card.link}
         alt={card.name}
@@ -33,8 +58,13 @@ function Card({ card, userId, onDelete, onCardClick }) {
         <p className='gallery__card-name '>{card.name}</p>
         <div className='gallery__card-like-content'>
           <button
+            onClick={handleLikeButtonClick}
             className={`gallery__card-like-button ${
-              card.likes.length ? 'gallery__card-like-button-active' : ''
+              card.likes.find((element) => {
+                return element._id === userId;
+              })
+                ? 'gallery__card-like-button-active'
+                : ''
             }`}
           ></button>
           <p className='gallery__card-like-counter'>
