@@ -182,6 +182,40 @@ function App() {
       });
   }
 
+  function handleLikeCard(id, path, executor) {
+    client
+      .like(id, path)
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Error: ${res.status}`);
+      })
+      .then((res) => {
+        executor(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  function handleDisikeCard(id, path, executor) {
+    client
+      .dislike(id, path)
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Error: ${res.status}`);
+      })
+      .then((res) => {
+        executor(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   return (
     <>
       <div className='body'>
@@ -200,6 +234,8 @@ function App() {
                 userId={user._id}
                 onDelete={handleDeleteCard}
                 onCardClick={handleCardClick}
+                onDeslikeClick={handleDisikeCard}
+                onLikeClick={handleLikeCard}
               ></Card>
             ))}
           </Main>
