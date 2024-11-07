@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import deleteButton from '../../images/gallery/gallery_card_delete_button.svg';
 
 function Card({
@@ -8,16 +9,36 @@ function Card({
   onDeslikeClick,
   onLikeClick,
 }) {
+  const [currentCard, setCurrentCard] = useState(card);
+  // console.log(card);
+  // console.log(currentCard);
+
   function handleDelete() {
-    if (card.owner._id === userId) {
-      onDelete(card._id);
+    if (currentCard.owner._id === userId) {
+      onDelete(currentCard._id);
     } else {
       console.error('O usuário não é dono desse card');
     }
   }
 
   function handleCardClick() {
-    onCardClick(card);
+    onCardClick(currentCard);
+  }
+
+  function handleLikeButtonClick() {
+    if (
+      currentCard.likes.find((element) => {
+        return element._id === userId;
+      })
+    ) {
+      onDeslikeClick(currentCard._id, '/cards/likes', (res) => {
+        setCurrentCard(res);
+      });
+    } else {
+      onLikeClick(currentCard._id, '/cards/likes', (res) => {
+        setCurrentCard(res);
+      });
+    }
   }
 
   function handleLikeButtonClick() {
@@ -45,22 +66,24 @@ function Card({
         src={deleteButton}
         alt='Ícone de uma lixeira'
         className={`gallery__card-delete-button ${
-          card.owner._id === userId ? `gallery__card-delete-button-visible` : ''
+          currentCard.owner._id === userId
+            ? `gallery__card-delete-button-visible`
+            : ''
         }`}
       />
       <img
         onClick={handleCardClick}
         className='gallery__card-image'
-        src={card.link}
-        alt={card.name}
+        src={currentCard.link}
+        alt={currentCard.name}
       />
       <div className='gallery__card-information'>
-        <p className='gallery__card-name '>{card.name}</p>
+        <p className='gallery__card-name '>{currentCard.name}</p>
         <div className='gallery__card-like-content'>
           <button
             onClick={handleLikeButtonClick}
             className={`gallery__card-like-button ${
-              card.likes.find((element) => {
+              currentCard.likes.find((element) => {
                 return element._id === userId;
               })
                 ? 'gallery__card-like-button-active'
@@ -68,7 +91,7 @@ function Card({
             }`}
           ></button>
           <p className='gallery__card-like-counter'>
-            {card.likes.length ? card.likes.length : '0'}
+            {currentCard.likes.length ? currentCard.likes.length : '0'}
           </p>
         </div>
       </div>
