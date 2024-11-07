@@ -43,9 +43,7 @@ function App() {
         console.log(err);
         console.log('Erro no GET /users/me');
       });
-  }, []);
 
-  useEffect(() => {
     client
       .getInitialCards('/cards')
       .then((res) => {

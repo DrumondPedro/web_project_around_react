@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import deleteButton from '../../images/gallery/gallery_card_delete_button.svg';
 
 function Card({
@@ -10,8 +10,10 @@ function Card({
   onLikeClick,
 }) {
   const [currentCard, setCurrentCard] = useState(card);
-  // console.log(card);
-  // console.log(currentCard);
+
+  useEffect(() => {
+    setCurrentCard(card);
+  }, [card]);
 
   function handleDelete() {
     if (currentCard.owner._id === userId) {
@@ -37,24 +39,6 @@ function Card({
     } else {
       onLikeClick(currentCard._id, '/cards/likes', (res) => {
         setCurrentCard(res);
-      });
-    }
-  }
-
-  function handleLikeButtonClick() {
-    if (
-      card.likes.find((element) => {
-        return element._id === userId;
-      })
-    ) {
-      onDeslikeClick(card._id, '/cards/likes', (res) => {
-        card = res;
-        console.log(card);
-      });
-    } else {
-      onLikeClick(card._id, '/cards/likes', (res) => {
-        card = res;
-        console.log(card);
       });
     }
   }
