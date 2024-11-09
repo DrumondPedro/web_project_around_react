@@ -4,6 +4,7 @@ function PopupWithForm({
   children,
   name,
   title,
+  buttonText,
   isOpen,
   isSaving,
   onClose,
@@ -41,7 +42,7 @@ function PopupWithForm({
               isSaving ? 'form__submit-button-inactive' : ''
             } `}
           >
-            {`${isSaving ? 'Salvando...' : 'Salvar'}`}
+            {`${isSaving ? 'Salvando...' : `${buttonText}`}`}
           </button>
         </form>
       </div>

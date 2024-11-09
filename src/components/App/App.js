@@ -17,6 +17,7 @@ function App() {
 
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
+  const [isDeletePlacePopupOpen, setDeletePlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
   const [isImagePopupOpen, setImagePopupOpen] = useState(false);
 
@@ -26,6 +27,8 @@ function App() {
   const [isSavingPopupData, setIsSavingPopupData] = useState(false);
 
   const [selectedCard, setSelectedCard] = useState({});
+
+  const [selectedCardId, setSelectedCardId] = useState('');
 
   useEffect(() => {
     client
@@ -72,6 +75,11 @@ function App() {
     setGalleryData({ title: '', link: '' });
   }
 
+  function handleDeletePlaceClick(cardId) {
+    setDeletePlacePopupOpen(true);
+    setSelectedCardId(cardId);
+  }
+
   function handleEditAvatarClick() {
     setEditAvatarPopupOpen(true);
     setPicture('');
@@ -85,6 +93,7 @@ function App() {
   function closeAllPopups() {
     setEditProfilePopupOpen(false);
     setAddPlacePopupOpen(false);
+    setDeletePlacePopupOpen(false);
     setEditAvatarPopupOpen(false);
     setImagePopupOpen(false);
   }
@@ -158,10 +167,10 @@ function App() {
       });
   }
 
-  function handleDeleteCard(cardId) {
+  function handleDeleteCard() {
     setIsSavingPopupData(true);
     client
-      .deleteCard(cardId, '/cards')
+      .deleteCard(selectedCardId, '/cards')
       .then((res) => {
         if (res.ok) {
           return res.json();
@@ -169,14 +178,16 @@ function App() {
         return Promise.reject(`Error: ${res.status}`);
       })
       .then(() => {
-        setCardsList(cardsList.filter((card) => card._id !== cardId));
+        setCardsList(cardsList.filter((card) => card._id !== selectedCardId));
         closeAllPopups();
         setIsSavingPopupData(false);
+        setSelectedCardId('');
       })
       .catch((err) => {
         closeAllPopups();
         setIsSavingPopupData(false);
         console.log(`${err} - Erro no DELETE /cards`);
+        setSelectedCardId('');
       });
   }
 
@@ -230,7 +241,7 @@ function App() {
                 key={i}
                 card={card}
                 userId={user._id}
-                onDelete={handleDeleteCard}
+                onDelete={handleDeletePlaceClick}
                 onCardClick={handleCardClick}
                 onDeslikeClick={handleDisikeCard}
                 onLikeClick={handleLikeCard}
@@ -242,6 +253,7 @@ function App() {
         <PopupWithForm
           name={`profile`}
           title={`Editar perfil`}
+          buttonText={`Salvar`}
           isOpen={isEditProfilePopupOpen}
           isSaving={isSavingPopupData}
           onClose={closeAllPopups}
@@ -285,6 +297,7 @@ function App() {
         <PopupWithForm
           name={`gallery`}
           title={`Novo local`}
+          buttonText={`Criar`}
           isOpen={isAddPlacePopupOpen}
           isSaving={isSavingPopupData}
           onClose={closeAllPopups}
@@ -326,6 +339,7 @@ function App() {
         <PopupWithForm
           name={`picture`}
           title={`Alterar a foto do perfil`}
+          buttonText={`Salvar`}
           isOpen={isEditAvatarPopupOpen}
           isSaving={isSavingPopupData}
           onClose={closeAllPopups}
@@ -348,6 +362,15 @@ function App() {
             </label>
           </fieldset>
         </PopupWithForm>
+        <PopupWithForm
+          name={`confirmer`}
+          title={`Tem certeza?`}
+          buttonText={`Sim`}
+          isOpen={isDeletePlacePopupOpen}
+          isSaving={isSavingPopupData}
+          onClose={closeAllPopups}
+          handleApiRequest={handleDeleteCard}
+        ></PopupWithForm>
         <ImagePopup
           card={selectedCard}
           isOpen={isImagePopupOpen}
