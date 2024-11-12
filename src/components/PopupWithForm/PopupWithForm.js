@@ -7,6 +7,7 @@ function PopupWithForm({
   buttonText,
   isOpen,
   isSaving,
+  isActive,
   onClose,
   handleApiRequest,
 }) {
@@ -38,9 +39,9 @@ function PopupWithForm({
           <button
             type='submit'
             disabled={isSaving}
-            className={`form__submit-button ${
-              isSaving ? 'form__submit-button-inactive' : ''
-            } `}
+            className={`form__submit-button 
+              ${isSaving ? 'form__submit-button-inactive' : ''} 
+              ${isActive ? `` : `form__submit-button-inactive`}`}
           >
             {`${isSaving ? 'Salvando...' : `${buttonText}`}`}
           </button>

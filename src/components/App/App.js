@@ -26,6 +26,21 @@ function App() {
 
   const [isSavingPopupData, setIsSavingPopupData] = useState(false);
 
+  const [isValideName, setIsValidName] = useState(true);
+  const [isValideAbout, setIsValidAbout] = useState(true);
+
+  const [isValideLink, setIsValidLink] = useState(true);
+  const [isValideTitle, setIsValidTitle] = useState(true);
+
+  const [isValideAvatarLink, setIsValidAvatarLink] = useState(true);
+
+  const [isValideProfilePopupData, setIsValidProfilePopupData] =
+    useState(false);
+  const [isValideGalerryPopupData, setIsValidGalerryPopupData] =
+    useState(false);
+  const [isValidePicturePopupData, setIsValidPicturePopupData] =
+    useState(false);
+
   const [selectedCard, setSelectedCard] = useState({});
 
   const [selectedCardId, setSelectedCardId] = useState('');
@@ -68,11 +83,15 @@ function App() {
   function handleEditProfileClick() {
     setEditProfilePopupOpen(true);
     setUserFront({ name: user.name, about: user.about });
+    setIsValidName(true);
+    setIsValidAbout(true);
   }
 
   function handleAddPlaceClick() {
     setAddPlacePopupOpen(true);
     setGalleryData({ title: '', link: '' });
+    setIsValidLink(true);
+    setIsValidTitle(true);
   }
 
   function handleDeletePlaceClick(cardId) {
@@ -83,6 +102,7 @@ function App() {
   function handleEditAvatarClick() {
     setEditAvatarPopupOpen(true);
     setPicture('');
+    setIsValidAvatarLink(true);
   }
 
   function handleCardClick(card) {
@@ -225,6 +245,30 @@ function App() {
       });
   }
 
+  function handleProfilePopupValidation() {
+    if (isValideName && isValideAbout) {
+      setIsValidProfilePopupData(true);
+      return;
+    }
+    setIsValidProfilePopupData(false);
+  }
+
+  function handleGalerryPopupValidation() {
+    if (isValideLink && isValideTitle) {
+      setIsValidGalerryPopupData(true);
+      return;
+    }
+    setIsValidGalerryPopupData(false);
+  }
+
+  function handlePicturePopupValidation() {
+    if (isValideAvatarLink) {
+      setIsValidPicturePopupData(true);
+      return;
+    }
+    setIsValidPicturePopupData(false);
+  }
+
   return (
     <>
       <div className='body'>
@@ -256,6 +300,7 @@ function App() {
           buttonText={`Salvar`}
           isOpen={isEditProfilePopupOpen}
           isSaving={isSavingPopupData}
+          isActive={isValideProfilePopupData}
           onClose={closeAllPopups}
           handleApiRequest={handleProfilePopupSubimit}
         >
@@ -263,34 +308,68 @@ function App() {
             <label className='form__field'>
               <input
                 type='text'
-                className='form__input form__input_name'
+                className={`form__input form__input_name ${
+                  isValideName ? `` : `form__input_type-error`
+                }`}
                 id='name'
                 placeholder='Nome'
                 required
-                minength='2'
-                maxength='40'
+                minLength='2'
+                maxLength='40'
                 value={userFront.name}
                 onChange={(evt) => {
                   setUserFront({ ...userFront, name: evt.target.value });
+                  setIsValidName(evt.target.validity.valid);
+                  handleProfilePopupValidation();
                 }}
               />
-              <span className='form__error person-error'></span>
+              <span
+                className={`form__error person-error ${
+                  isValideName ? `` : `form__error_visible`
+                }`}
+              >
+                {`${
+                  isValideName
+                    ? ``
+                    : `${
+                        document.querySelector('.form__input_name')
+                          .validationMessage
+                      }`
+                }`}
+              </span>
             </label>
             <label className='form__field'>
               <input
                 type='text'
-                className='form__input form__input_about'
+                className={`form__input form__input_about ${
+                  isValideAbout ? `` : `form__input_type-error`
+                }`}
                 id='about'
                 placeholder='Sobre mim'
                 required
-                minength='2'
-                maxength='200'
+                minLength='2'
+                maxLength='200'
                 value={userFront.about}
                 onChange={(evt) => {
                   setUserFront({ ...userFront, about: evt.target.value });
+                  setIsValidAbout(evt.target.validity.valid);
+                  handleProfilePopupValidation();
                 }}
               />
-              <span className='form__error about-error'></span>
+              <span
+                className={`form__error about-error ${
+                  isValideAbout ? `` : `form__error_visible`
+                }`}
+              >
+                {`${
+                  isValideAbout
+                    ? ``
+                    : `${
+                        document.querySelector('.form__input_about')
+                          .validationMessage
+                      }`
+                }`}
+              </span>
             </label>
           </fieldset>
         </PopupWithForm>
@@ -300,6 +379,7 @@ function App() {
           buttonText={`Criar`}
           isOpen={isAddPlacePopupOpen}
           isSaving={isSavingPopupData}
+          isActive={isValideGalerryPopupData}
           onClose={closeAllPopups}
           handleApiRequest={handleGalerryPopupSubimit}
         >
@@ -307,7 +387,9 @@ function App() {
             <label className='form__field'>
               <input
                 type='text'
-                className='form__input form__input_title'
+                className={`form__input form__input_title ${
+                  isValideTitle ? `` : `form__input_type-error`
+                }`}
                 id='title'
                 placeholder='Título'
                 required
@@ -316,23 +398,50 @@ function App() {
                 value={galleryData.title}
                 onChange={(evt) => {
                   setGalleryData({ ...galleryData, title: evt.target.value });
+                  setIsValidTitle(evt.target.validity.valid);
+                  handleGalerryPopupValidation();
                 }}
               />
-              <span className='form__error name-error'></span>
+              <span
+                className={`form__error about-error ${
+                  isValideTitle ? `` : `form__error_visible`
+                }`}
+              >{`${
+                isValideTitle
+                  ? ``
+                  : `${
+                      document.querySelector('.form__input_title')
+                        .validationMessage
+                    }`
+              }`}</span>
             </label>
             <label className='form__field'>
               <input
                 type='url'
-                className='form__input form__input_link'
+                className={`form__input form__input_link ${
+                  isValideLink ? `` : `form__input_type-error`
+                }`}
                 id='link'
                 placeholder='Link de imagem'
                 required
                 value={galleryData.link}
                 onChange={(evt) => {
                   setGalleryData({ ...galleryData, link: evt.target.value });
+                  setIsValidLink(evt.target.validity.valid);
                 }}
               />
-              <span className='form__error link-error'></span>
+              <span
+                className={`form__error about-error ${
+                  isValideLink ? `` : `form__error_visible`
+                }`}
+              >{`${
+                isValideLink
+                  ? ``
+                  : `${
+                      document.querySelector('.form__input_link')
+                        .validationMessage
+                    }`
+              }`}</span>
             </label>
           </fieldset>
         </PopupWithForm>
@@ -342,6 +451,7 @@ function App() {
           buttonText={`Salvar`}
           isOpen={isEditAvatarPopupOpen}
           isSaving={isSavingPopupData}
+          isActive={isValidePicturePopupData}
           onClose={closeAllPopups}
           handleApiRequest={handlePicturePopupSubimit}
         >
@@ -349,16 +459,31 @@ function App() {
             <label className='form__field'>
               <input
                 type='url'
-                className='form__input form__input_picture'
+                className={`form__input form__input_picture ${
+                  isValideAvatarLink ? `` : `form__input_type-error`
+                }`}
                 id='picture'
                 placeholder='Link da foto'
                 required
                 value={picture}
                 onChange={(evt) => {
                   setPicture(evt.target.value);
+                  setIsValidAvatarLink(evt.target.validity.valid);
+                  handlePicturePopupValidation();
                 }}
               />
-              <span className='form__error picture-error'></span>
+              <span
+                className={`form__error about-error ${
+                  isValideAvatarLink ? `` : `form__error_visible`
+                }`}
+              >{`${
+                isValideAvatarLink
+                  ? ``
+                  : `${
+                      document.querySelector('.form__input_picture')
+                        .validationMessage
+                    }`
+              }`}</span>
             </label>
           </fieldset>
         </PopupWithForm>
