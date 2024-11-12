@@ -6,6 +6,7 @@
 .form__set {
   border: none;
   padding: 0;
+  margin: 0 0 48px;
 }
 
 .form__field {
@@ -54,7 +55,7 @@
   border-radius: 2px;
   color: #fff;
   background-color: #000;
-  margin: 48px 0 0;
+  margin: 0;
   cursor: pointer;
 }
 
