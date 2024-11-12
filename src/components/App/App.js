@@ -26,20 +26,17 @@ function App() {
 
   const [isSavingPopupData, setIsSavingPopupData] = useState(false);
 
-  const [isValideName, setIsValidName] = useState(true);
-  const [isValideAbout, setIsValidAbout] = useState(true);
+  const [isValidName, setIsValidName] = useState(false);
+  const [isValidAbout, setIsValidAbout] = useState(false);
 
-  const [isValideLink, setIsValidLink] = useState(true);
-  const [isValideTitle, setIsValidTitle] = useState(true);
+  const [isValidLink, setIsValidLink] = useState(false);
+  const [isValidTitle, setIsValidTitle] = useState(false);
 
-  const [isValideAvatarLink, setIsValidAvatarLink] = useState(true);
+  const [isValidAvatarLink, setIsValidAvatarLink] = useState(false);
 
-  const [isValideProfilePopupData, setIsValidProfilePopupData] =
-    useState(false);
-  const [isValideGalerryPopupData, setIsValidGalerryPopupData] =
-    useState(false);
-  const [isValidePicturePopupData, setIsValidPicturePopupData] =
-    useState(false);
+  const [isValidProfilePopupData, setIsValidProfilePopupData] = useState(false);
+  const [isValidGalerryPopupData, setIsValidGalerryPopupData] = useState(false);
+  const [isValidPicturePopupData, setIsValidPicturePopupData] = useState(false);
 
   const [selectedCard, setSelectedCard] = useState({});
 
@@ -85,6 +82,7 @@ function App() {
     setUserFront({ name: user.name, about: user.about });
     setIsValidName(true);
     setIsValidAbout(true);
+    setIsValidProfilePopupData(false);
   }
 
   function handleAddPlaceClick() {
@@ -92,6 +90,7 @@ function App() {
     setGalleryData({ title: '', link: '' });
     setIsValidLink(true);
     setIsValidTitle(true);
+    setIsValidGalerryPopupData(false);
   }
 
   function handleDeletePlaceClick(cardId) {
@@ -103,6 +102,7 @@ function App() {
     setEditAvatarPopupOpen(true);
     setPicture('');
     setIsValidAvatarLink(true);
+    setIsValidPicturePopupData(false);
   }
 
   function handleCardClick(card) {
@@ -246,7 +246,7 @@ function App() {
   }
 
   function handleProfilePopupValidation() {
-    if (isValideName && isValideAbout) {
+    if (isValidName && isValidAbout) {
       setIsValidProfilePopupData(true);
       return;
     }
@@ -254,7 +254,7 @@ function App() {
   }
 
   function handleGalerryPopupValidation() {
-    if (isValideLink && isValideTitle) {
+    if (isValidLink && isValidTitle) {
       setIsValidGalerryPopupData(true);
       return;
     }
@@ -262,7 +262,7 @@ function App() {
   }
 
   function handlePicturePopupValidation() {
-    if (isValideAvatarLink) {
+    if (isValidAvatarLink) {
       setIsValidPicturePopupData(true);
       return;
     }
@@ -300,7 +300,7 @@ function App() {
           buttonText={`Salvar`}
           isOpen={isEditProfilePopupOpen}
           isSaving={isSavingPopupData}
-          isActive={isValideProfilePopupData}
+          isActive={isValidProfilePopupData}
           onClose={closeAllPopups}
           handleApiRequest={handleProfilePopupSubimit}
         >
@@ -309,7 +309,7 @@ function App() {
               <input
                 type='text'
                 className={`form__input form__input_name ${
-                  isValideName ? `` : `form__input_type-error`
+                  isValidName ? `` : `form__input_type-error`
                 }`}
                 id='name'
                 placeholder='Nome'
@@ -325,11 +325,11 @@ function App() {
               />
               <span
                 className={`form__error person-error ${
-                  isValideName ? `` : `form__error_visible`
+                  isValidName ? `` : `form__error_visible`
                 }`}
               >
                 {`${
-                  isValideName
+                  isValidName
                     ? ``
                     : `${
                         document.querySelector('.form__input_name')
@@ -342,7 +342,7 @@ function App() {
               <input
                 type='text'
                 className={`form__input form__input_about ${
-                  isValideAbout ? `` : `form__input_type-error`
+                  isValidAbout ? `` : `form__input_type-error`
                 }`}
                 id='about'
                 placeholder='Sobre mim'
@@ -358,11 +358,11 @@ function App() {
               />
               <span
                 className={`form__error about-error ${
-                  isValideAbout ? `` : `form__error_visible`
+                  isValidAbout ? `` : `form__error_visible`
                 }`}
               >
                 {`${
-                  isValideAbout
+                  isValidAbout
                     ? ``
                     : `${
                         document.querySelector('.form__input_about')
@@ -379,7 +379,7 @@ function App() {
           buttonText={`Criar`}
           isOpen={isAddPlacePopupOpen}
           isSaving={isSavingPopupData}
-          isActive={isValideGalerryPopupData}
+          isActive={isValidGalerryPopupData}
           onClose={closeAllPopups}
           handleApiRequest={handleGalerryPopupSubimit}
         >
@@ -388,7 +388,7 @@ function App() {
               <input
                 type='text'
                 className={`form__input form__input_title ${
-                  isValideTitle ? `` : `form__input_type-error`
+                  isValidTitle ? `` : `form__input_type-error`
                 }`}
                 id='title'
                 placeholder='Título'
@@ -404,10 +404,10 @@ function App() {
               />
               <span
                 className={`form__error about-error ${
-                  isValideTitle ? `` : `form__error_visible`
+                  isValidTitle ? `` : `form__error_visible`
                 }`}
               >{`${
-                isValideTitle
+                isValidTitle
                   ? ``
                   : `${
                       document.querySelector('.form__input_title')
@@ -419,7 +419,7 @@ function App() {
               <input
                 type='url'
                 className={`form__input form__input_link ${
-                  isValideLink ? `` : `form__input_type-error`
+                  isValidLink ? `` : `form__input_type-error`
                 }`}
                 id='link'
                 placeholder='Link de imagem'
@@ -428,14 +428,15 @@ function App() {
                 onChange={(evt) => {
                   setGalleryData({ ...galleryData, link: evt.target.value });
                   setIsValidLink(evt.target.validity.valid);
+                  handleGalerryPopupValidation();
                 }}
               />
               <span
                 className={`form__error about-error ${
-                  isValideLink ? `` : `form__error_visible`
+                  isValidLink ? `` : `form__error_visible`
                 }`}
               >{`${
-                isValideLink
+                isValidLink
                   ? ``
                   : `${
                       document.querySelector('.form__input_link')
@@ -451,7 +452,7 @@ function App() {
           buttonText={`Salvar`}
           isOpen={isEditAvatarPopupOpen}
           isSaving={isSavingPopupData}
-          isActive={isValidePicturePopupData}
+          isActive={isValidPicturePopupData}
           onClose={closeAllPopups}
           handleApiRequest={handlePicturePopupSubimit}
         >
@@ -460,7 +461,7 @@ function App() {
               <input
                 type='url'
                 className={`form__input form__input_picture ${
-                  isValideAvatarLink ? `` : `form__input_type-error`
+                  isValidAvatarLink ? `` : `form__input_type-error`
                 }`}
                 id='picture'
                 placeholder='Link da foto'
@@ -474,10 +475,10 @@ function App() {
               />
               <span
                 className={`form__error about-error ${
-                  isValideAvatarLink ? `` : `form__error_visible`
+                  isValidAvatarLink ? `` : `form__error_visible`
                 }`}
               >{`${
-                isValideAvatarLink
+                isValidAvatarLink
                   ? ``
                   : `${
                       document.querySelector('.form__input_picture')
@@ -493,6 +494,7 @@ function App() {
           buttonText={`Sim`}
           isOpen={isDeletePlacePopupOpen}
           isSaving={isSavingPopupData}
+          isActive={true}
           onClose={closeAllPopups}
           handleApiRequest={handleDeleteCard}
         ></PopupWithForm>
