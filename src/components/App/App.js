@@ -9,8 +9,16 @@ import Card from '../Card/Card';
 
 import client from '../../utils/api';
 
+import loadingPhoto from '../../images/profile/profile_loading_photo.png';
+
 function App() {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState({
+    name: '...',
+    about: '...',
+    avatar: loadingPhoto,
+    _id: '000',
+    cohort: '...',
+  });
   const [userFront, setUserFront] = useState({});
 
   const [cardsList, setCardsList] = useState([]);
@@ -27,70 +35,35 @@ function App() {
   const [isSavingPopupData, setIsSavingPopupData] = useState(false);
 
   const [isValidName, setIsValidName] = useState(false);
+  const [nameErrorMessage, setNameErrorMessage] = useState('');
   const [isValidAbout, setIsValidAbout] = useState(false);
+  const [aboutErrorMessage, setAboutErrorMessage] = useState('');
 
-  const [isValidLink, setIsValidLink] = useState(false);
   const [isValidTitle, setIsValidTitle] = useState(false);
+  const [titleErrorMessage, setTitleErrorMessage] = useState('');
+  const [isValidLink, setIsValidLink] = useState(false);
+  const [linkErrorMessage, setLinkErrorMessage] = useState('');
 
   const [isValidAvatarLink, setIsValidAvatarLink] = useState(false);
-
-  const [isValidProfilePopupData, setIsValidProfilePopupData] = useState(false);
-  const [isValidGalerryPopupData, setIsValidGalerryPopupData] = useState(false);
-  const [isValidPicturePopupData, setIsValidPicturePopupData] = useState(false);
+  const [avatarLinkErrorMessage, setAvatarLinkErrorMessage] = useState('');
+  const [avatarButtonState, setAvatarButtonState] = useState(false);
 
   const [selectedCard, setSelectedCard] = useState({});
 
   const [selectedCardId, setSelectedCardId] = useState('');
-
-  useEffect(() => {
-    client
-      .getUserInfo('/users/me')
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .then((data) => {
-        setUser(data);
-      })
-      .catch((err) => {
-        console.log(err);
-        console.log('Erro no GET /users/me');
-      });
-
-    client
-      .getInitialCards('/cards')
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .then((data) => {
-        setCardsList(data);
-      })
-      .catch((err) => {
-        console.log(err);
-        console.log('Erro no GET /cards');
-        setCardsList([]);
-      });
-  }, []);
 
   function handleEditProfileClick() {
     setEditProfilePopupOpen(true);
     setUserFront({ name: user.name, about: user.about });
     setIsValidName(true);
     setIsValidAbout(true);
-    setIsValidProfilePopupData(false);
   }
 
   function handleAddPlaceClick() {
     setAddPlacePopupOpen(true);
     setGalleryData({ title: '', link: '' });
-    setIsValidLink(true);
-    setIsValidTitle(true);
-    setIsValidGalerryPopupData(false);
+    setIsValidTitle(false);
+    setIsValidLink(false);
   }
 
   function handleDeletePlaceClick(cardId) {
@@ -101,8 +74,8 @@ function App() {
   function handleEditAvatarClick() {
     setEditAvatarPopupOpen(true);
     setPicture('');
+    setAvatarButtonState(false);
     setIsValidAvatarLink(true);
-    setIsValidPicturePopupData(false);
   }
 
   function handleCardClick(card) {
@@ -245,29 +218,40 @@ function App() {
       });
   }
 
-  function handleProfilePopupValidation() {
-    if (isValidName && isValidAbout) {
-      setIsValidProfilePopupData(true);
-      return;
-    }
-    setIsValidProfilePopupData(false);
-  }
+  useEffect(() => {
+    client
+      .getUserInfo('/users/me')
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Error: ${res.status}`);
+      })
+      .then((data) => {
+        setUser(data);
+      })
+      .catch((err) => {
+        console.log(err);
+        console.log('Erro no GET /users/me');
+      });
 
-  function handleGalerryPopupValidation() {
-    if (isValidLink && isValidTitle) {
-      setIsValidGalerryPopupData(true);
-      return;
-    }
-    setIsValidGalerryPopupData(false);
-  }
-
-  function handlePicturePopupValidation() {
-    if (isValidAvatarLink) {
-      setIsValidPicturePopupData(true);
-      return;
-    }
-    setIsValidPicturePopupData(false);
-  }
+    client
+      .getInitialCards('/cards')
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Error: ${res.status}`);
+      })
+      .then((data) => {
+        setCardsList(data);
+      })
+      .catch((err) => {
+        console.log(err);
+        console.log('Erro no GET /cards');
+        setCardsList([]);
+      });
+  }, []);
 
   return (
     <>
@@ -300,7 +284,7 @@ function App() {
           buttonText={`Salvar`}
           isOpen={isEditProfilePopupOpen}
           isSaving={isSavingPopupData}
-          isActive={isValidProfilePopupData}
+          isActive={isValidName && isValidAbout}
           onClose={closeAllPopups}
           handleApiRequest={handleProfilePopupSubimit}
         >
@@ -320,7 +304,7 @@ function App() {
                 onChange={(evt) => {
                   setUserFront({ ...userFront, name: evt.target.value });
                   setIsValidName(evt.target.validity.valid);
-                  handleProfilePopupValidation();
+                  setNameErrorMessage(evt.target.validationMessage);
                 }}
               />
               <span
@@ -328,14 +312,7 @@ function App() {
                   isValidName ? `` : `form__error_visible`
                 }`}
               >
-                {`${
-                  isValidName
-                    ? ``
-                    : `${
-                        document.querySelector('.form__input_name')
-                          .validationMessage
-                      }`
-                }`}
+                {nameErrorMessage}
               </span>
             </label>
             <label className='form__field'>
@@ -353,7 +330,7 @@ function App() {
                 onChange={(evt) => {
                   setUserFront({ ...userFront, about: evt.target.value });
                   setIsValidAbout(evt.target.validity.valid);
-                  handleProfilePopupValidation();
+                  setAboutErrorMessage(evt.target.validationMessage);
                 }}
               />
               <span
@@ -361,14 +338,7 @@ function App() {
                   isValidAbout ? `` : `form__error_visible`
                 }`}
               >
-                {`${
-                  isValidAbout
-                    ? ``
-                    : `${
-                        document.querySelector('.form__input_about')
-                          .validationMessage
-                      }`
-                }`}
+                {aboutErrorMessage}
               </span>
             </label>
           </fieldset>
@@ -379,7 +349,7 @@ function App() {
           buttonText={`Criar`}
           isOpen={isAddPlacePopupOpen}
           isSaving={isSavingPopupData}
-          isActive={isValidGalerryPopupData}
+          isActive={isValidLink && isValidTitle}
           onClose={closeAllPopups}
           handleApiRequest={handleGalerryPopupSubimit}
         >
@@ -399,21 +369,16 @@ function App() {
                 onChange={(evt) => {
                   setGalleryData({ ...galleryData, title: evt.target.value });
                   setIsValidTitle(evt.target.validity.valid);
-                  handleGalerryPopupValidation();
+                  setTitleErrorMessage(evt.target.validationMessage);
                 }}
               />
               <span
                 className={`form__error about-error ${
                   isValidTitle ? `` : `form__error_visible`
                 }`}
-              >{`${
-                isValidTitle
-                  ? ``
-                  : `${
-                      document.querySelector('.form__input_title')
-                        .validationMessage
-                    }`
-              }`}</span>
+              >
+                {titleErrorMessage}
+              </span>
             </label>
             <label className='form__field'>
               <input
@@ -428,21 +393,16 @@ function App() {
                 onChange={(evt) => {
                   setGalleryData({ ...galleryData, link: evt.target.value });
                   setIsValidLink(evt.target.validity.valid);
-                  handleGalerryPopupValidation();
+                  setLinkErrorMessage(evt.target.validationMessage);
                 }}
               />
               <span
                 className={`form__error about-error ${
                   isValidLink ? `` : `form__error_visible`
                 }`}
-              >{`${
-                isValidLink
-                  ? ``
-                  : `${
-                      document.querySelector('.form__input_link')
-                        .validationMessage
-                    }`
-              }`}</span>
+              >
+                {linkErrorMessage}
+              </span>
             </label>
           </fieldset>
         </PopupWithForm>
@@ -452,7 +412,7 @@ function App() {
           buttonText={`Salvar`}
           isOpen={isEditAvatarPopupOpen}
           isSaving={isSavingPopupData}
-          isActive={isValidPicturePopupData}
+          isActive={avatarButtonState}
           onClose={closeAllPopups}
           handleApiRequest={handlePicturePopupSubimit}
         >
@@ -470,21 +430,22 @@ function App() {
                 onChange={(evt) => {
                   setPicture(evt.target.value);
                   setIsValidAvatarLink(evt.target.validity.valid);
-                  handlePicturePopupValidation();
+                  setAvatarLinkErrorMessage(evt.target.validationMessage);
+                  setAvatarButtonState(
+                    Array.from(
+                      evt.target.parentElement.parentElement.parentElement
+                        .elements
+                    ).every((input) => input.validity.valid)
+                  );
                 }}
               />
               <span
                 className={`form__error about-error ${
                   isValidAvatarLink ? `` : `form__error_visible`
                 }`}
-              >{`${
-                isValidAvatarLink
-                  ? ``
-                  : `${
-                      document.querySelector('.form__input_picture')
-                        .validationMessage
-                    }`
-              }`}</span>
+              >
+                {avatarLinkErrorMessage}
+              </span>
             </label>
           </fieldset>
         </PopupWithForm>

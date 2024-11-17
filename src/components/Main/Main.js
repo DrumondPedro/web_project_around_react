@@ -1,4 +1,3 @@
-import loadingPhoto from '../../images/profile/profile_loading_photo.png';
 import pencilPath from '../../images/profile/profile_edit_button.svg';
 import plusPath from '../../images/profile/profile_add_button.svg';
 
@@ -17,15 +16,13 @@ function Main({
           onClick={onEditAvatarClick}
         ></button>
         <img
-          src={user.avatar ? user.avatar : loadingPhoto}
+          src={user.avatar}
           alt='Imagem de perfil do usuário.'
           className='profile__picture'
         />
         <div className='profile__personal-information'>
           <div className='profile__personal-title'>
-            <h1 className='profile__name'>
-              {user.name ? `${user.name}` : `...`}
-            </h1>
+            <h1 className='profile__name'>{user.name}</h1>
             <button
               className='profile__edit-button'
               onClick={onEditProfileClick}
@@ -37,9 +34,7 @@ function Main({
               />
             </button>
           </div>
-          <p className='profile__about'>
-            {user.about ? `${user.about}` : '...'}
-          </p>
+          <p className='profile__about'>{user.about}</p>
         </div>
         <button className='profile__add-button' onClick={onAddPlaceClick}>
           <img
