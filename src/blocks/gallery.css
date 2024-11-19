@@ -77,7 +77,7 @@
 }
 
 .gallery__card-like-button {
-  background-image: url(../images/gallery/gallery_card_like_button.svg);
+  background-image: url(../assets/images/gallery/gallery_card_like_button.svg);
   background-color: transparent;
   border: none;
   max-width: 21px;
@@ -96,7 +96,7 @@
 }
 
 .gallery__card-like-button-active {
-  background-image: url(../images/gallery/gallery_card_like_button_active.svg);
+  background-image: url(../assets/images/gallery/gallery_card_like_button_active.svg);
 }
 
 @media screen and (max-width: 440px) {

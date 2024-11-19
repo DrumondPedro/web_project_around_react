@@ -1,5 +1,5 @@
-import pencilPath from '../../images/profile/profile_edit_button.svg';
-import plusPath from '../../images/profile/profile_add_button.svg';
+import pencilPath from '../../assets/images/profile/profile_edit_button.svg';
+import plusPath from '../../assets/images/profile/profile_add_button.svg';
 
 function Main({
   user,

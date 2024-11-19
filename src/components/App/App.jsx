@@ -9,7 +9,7 @@ import Card from '../Card/Card';
 
 import client from '../../utils/api';
 
-import loadingPhoto from '../../images/profile/profile_loading_photo.png';
+import loadingPhoto from '../../assets/images/profile/profile_loading_photo.png';
 
 function App() {
   const [user, setUser] = useState({

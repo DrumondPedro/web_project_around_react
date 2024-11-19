@@ -1,4 +1,4 @@
-import closeIcon from '../../images/viewer/viewer_close_Icon.svg';
+import closeIcon from '../../assets/images/viewer/viewer_close_Icon.svg';
 
 function ImagePopup({ card, isOpen, onClose }) {
   return (

@@ -1,4 +1,4 @@
-import closeIcon from '../../images/editor/editor_close_Icon.svg';
+import closeIcon from '../../assets/images/editor/editor_close_Icon.svg';
 
 function PopupWithForm({
   children,

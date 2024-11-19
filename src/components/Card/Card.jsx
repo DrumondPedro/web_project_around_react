@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import deleteButton from '../../images/gallery/gallery_card_delete_button.svg';
+import deleteButton from '../../assets/images/gallery/gallery_card_delete_button.svg';
 
 function Card({
   card,
