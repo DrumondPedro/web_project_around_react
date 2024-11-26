@@ -1,15 +1,21 @@
 import { useEffect, useState } from 'react';
-import deleteButton from '../../assets/images/gallery/gallery_card_delete_button.svg';
+import deleteButton from '../../../../assets/images/gallery/gallery_card_delete_button.svg';
+
+import ImagePopup from '../Popup/components/ImagePopup/ImagePopup';
 
 function Card({
   card,
   userId,
   onDelete,
-  onCardClick,
+  handleOpenPopup,
   onDeslikeClick,
   onLikeClick,
 }) {
   const [currentCard, setCurrentCard] = useState(card);
+
+  const imageComponent = {
+    children: <ImagePopup card={currentCard} />,
+  };
 
   useEffect(() => {
     setCurrentCard(card);
@@ -24,7 +30,7 @@ function Card({
   }
 
   function handleCardClick() {
-    onCardClick(currentCard);
+    handleOpenPopup(imageComponent);
   }
 
   function handleLikeButtonClick() {
@@ -66,6 +72,7 @@ function Card({
         <div className='gallery__card-like-content'>
           <button
             onClick={handleLikeButtonClick}
+            aria-label='Like do cartão'
             className={`gallery__card-like-button ${
               currentCard.likes.find((element) => {
                 return element._id === userId;

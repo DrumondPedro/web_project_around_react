@@ -1,13 +1,10 @@
 .viewer {
   position: fixed;
   top: 0;
+  left: 0;
   background-color: rgba(0, 0, 0, 0.5);
   width: 100%;
   height: 100%;
-  display: none;
-}
-
-.viewer_visible {
   display: flex;
   align-items: center;
 }
@@ -16,6 +13,11 @@
   max-width: fit-content;
   margin: 0 auto;
   position: relative;
+  background-color: transparent;
+  max-height: 100%;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
 }
 
 .viewer__close-button {
