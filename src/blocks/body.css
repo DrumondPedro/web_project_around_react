@@ -5,7 +5,12 @@
   font-family: 'Inter', Arial, sans-serif;
 }
 
-.body {
+/* .body {
+  background-color: #000;
+  min-height: 100vh;
+} */
+
+body {
   background-color: #000;
   min-height: 100vh;
 }
