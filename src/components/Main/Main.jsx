@@ -1,9 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import pencilPath from '../../assets/images/profile/profile_edit_button.svg';
 import plusPath from '../../assets/images/profile/profile_add_button.svg';
-
-import loadingPhoto from '../../assets/images/profile/profile_loading_photo.png';
 
 import Popup from './components/Popup/Popup';
 import EditAvatar from './components/Popup/components/EditAvatar/EditAvatar';
@@ -11,19 +9,15 @@ import EditProfile from './components/Popup/components/EditProfile/EditProfile';
 import NewCard from './components/Popup/components/NewCard/NewCard';
 import Card from './components/Card/Card';
 
-function Main({ client }) {
-  const [user, setUser] = useState({
-    name: '...',
-    about: '...',
-    avatar: loadingPhoto,
-    _id: '000',
-    cohort: '...',
-  });
+import CurrentUserContext from '../../contexts/CurrentUserContext';
 
-  const [cardsList, setCardsList] = useState([]);
+function Main({ client }) {
+  const [cards, setCards] = useState([]);
 
   const [popup, setPopup] = useState(null);
   // const [isSavingPopupData, setIsSavingPopupData] = useState('false');
+
+  const currentUser = useContext(CurrentUserContext);
 
   const editAvatarPopup = {
     title: 'Alterar a foto do perfil',
@@ -33,7 +27,10 @@ function Main({ client }) {
   const editProfilePopup = {
     title: 'Editar perfil',
     children: (
-      <EditProfile user={user} handleApiRequest={handleProfilePopupSubimit} />
+      <EditProfile
+        user={currentUser}
+        handleApiRequest={handleProfilePopupSubimit}
+      />
     ),
   };
 
@@ -105,7 +102,7 @@ function Main({ client }) {
         return Promise.reject(`Error: ${res.status}`);
       })
       .then((newCard) => {
-        setCardsList([newCard, ...cardsList]);
+        setCards([newCard, ...cards]);
         handleClosePopup();
         // setIsSavingPopupData(false);
       })
@@ -127,7 +124,7 @@ function Main({ client }) {
   //       return Promise.reject(`Error: ${res.status}`);
   //     })
   //     .then(() => {
-  //       setCardsList(cardsList.filter((card) => card._id !== selectedCardId));
+  //       setCards(cards.filter((card) => card._id !== selectedCardId));
   //       closeAllPopups();
   //       // setIsSavingPopupData(false);
   //       setSelectedCardId('');
@@ -181,22 +178,6 @@ function Main({ client }) {
 
   useEffect(() => {
     client
-      .getUserInfo('/users/me')
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .then((data) => {
-        setUser(data);
-      })
-      .catch((err) => {
-        console.log(err);
-        console.log('Erro no GET /users/me');
-      });
-
-    client
       .getInitialCards('/cards')
       .then((res) => {
         if (res.ok) {
@@ -205,12 +186,12 @@ function Main({ client }) {
         return Promise.reject(`Error: ${res.status}`);
       })
       .then((data) => {
-        setCardsList(data);
+        setCards(data);
       })
       .catch((err) => {
         console.log(err);
         console.log('Erro no GET /cards');
-        setCardsList([]);
+        setCards([]);
       });
   }, []);
 
@@ -224,13 +205,13 @@ function Main({ client }) {
           }}
         ></button>
         <img
-          src={user.avatar}
+          src={currentUser.avatar}
           alt='Imagem de perfil do usuário.'
           className='profile__picture'
         />
         <div className='profile__personal-information'>
           <div className='profile__personal-title'>
-            <h1 className='profile__name'>{user.name}</h1>
+            <h1 className='profile__name'>{currentUser.name}</h1>
             <button
               className='profile__edit-button'
               onClick={() => {
@@ -244,7 +225,7 @@ function Main({ client }) {
               />
             </button>
           </div>
-          <p className='profile__about'>{user.about}</p>
+          <p className='profile__about'>{currentUser.about}</p>
         </div>
         <button
           className='profile__add-button'
@@ -261,11 +242,11 @@ function Main({ client }) {
       </section>
       <section className='gallery'>
         <ul className='gallery__cards'>
-          {cardsList.map((card, i) => (
+          {cards.map((card, i) => (
             <Card
               key={i}
               card={card}
-              userId={user._id}
+              userId={currentUser._id}
               // onDelete={handleDeletePlaceClick}
               handleOpenPopup={handleOpenPopup}
               onDeslikeClick={handleDisikeCard}
