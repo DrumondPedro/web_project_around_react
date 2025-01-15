@@ -7,13 +7,13 @@ function Card({
   card,
   userId,
   onDelete,
-  handleOpenPopup,
+  onOpenPopup,
   onDeslikeClick,
   onLikeClick,
 }) {
   const [currentCard, setCurrentCard] = useState(card);
 
-  const imageComponent = {
+  const imagePopup = {
     children: <ImagePopup card={currentCard} />,
   };
 
@@ -30,7 +30,7 @@ function Card({
   }
 
   function handleCardClick() {
-    handleOpenPopup(imageComponent);
+    onOpenPopup(imagePopup);
   }
 
   function handleLikeButtonClick() {

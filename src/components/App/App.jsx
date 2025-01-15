@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import loadingPhoto from '../../assets/images/profile/profile_loading_photo.png';
 
 import Header from '../Header/Header';
-import Footer from '../Footer/Footer';
 import Main from '../Main/Main';
+import Footer from '../Footer/Footer';
 
 import client from '../../utils/api';
 
@@ -18,6 +18,38 @@ function App() {
     _id: '000',
     cohort: '...',
   });
+
+  const [popup, setPopup] = useState(null);
+
+  function handleOpenPopup(popup) {
+    setPopup(popup);
+  }
+
+  function handleClosePopup() {
+    setPopup(null);
+  }
+
+  const handleUpdateUser = (userData) => {
+    // setIsSavingPopupData(true);
+    client
+      .updateUserInfo(userData, '/users/me')
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Error: ${res.status}`);
+      })
+      .then((data) => {
+        setCurrentUser(data);
+        handleClosePopup();
+        // setIsSavingPopupData(false);
+      })
+      .catch((err) => {
+        handleClosePopup();
+        // setIsSavingPopupData(false);
+        console.log(`${err} - Erro no PACH /users/me`);
+      });
+  };
 
   useEffect(() => {
     client
@@ -39,11 +71,16 @@ function App() {
 
   return (
     <>
-      <CurrentUserContext.Provider value={currentUser}>
+      <CurrentUserContext.Provider value={{ currentUser, handleUpdateUser }}>
         <div className='body'>
           <div className='page'>
             <Header />
-            <Main client={client}></Main>
+            <Main
+              client={client}
+              popup={popup}
+              onOpenPopup={handleOpenPopup}
+              onClosePopup={handleClosePopup}
+            ></Main>
             <Footer />
           </div>
           {/* <PopupWithForm

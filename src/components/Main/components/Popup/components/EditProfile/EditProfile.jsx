@@ -1,11 +1,27 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 
-function EditProfile({ isSaving, user, handleApiRequest }) {
-  const [profilePopupUser, setProfilePopupUser] = useState(user);
+import CurrentUserContext from '../../../../../../contexts/CurrentUserContext';
+
+function EditProfile({ isSaving }) {
+  const { currentUser, handleUpdateUser } = useContext(CurrentUserContext);
+
+  const [name, setName] = useState(currentUser.name);
+  const [about, setAbout] = useState(currentUser.about);
+
+  const handleNameChange = (evt) => {
+    setName(evt.target.value);
+    // setIsValidName(evt.target.validity.valid);
+    // setNameErrorMessage(evt.target.validationMessage);
+  };
+  const handleAboutChange = (evt) => {
+    setAbout(evt.target.value);
+    // setIsValidAbout(evt.target.validity.valid);
+    // setAboutErrorMessage(evt.target.validationMessage);
+  };
 
   function handleSubimit(evt) {
     evt.preventDefault();
-    handleApiRequest(profilePopupUser);
+    handleUpdateUser({ name, about });
   }
 
   return (
@@ -21,15 +37,8 @@ function EditProfile({ isSaving, user, handleApiRequest }) {
             required
             minLength='2'
             maxLength='40'
-            value={profilePopupUser.name}
-            onChange={(evt) => {
-              setProfilePopupUser({
-                ...profilePopupUser,
-                name: evt.target.value,
-              });
-              // setIsValidName(evt.target.validity.valid);
-              // setNameErrorMessage(evt.target.validationMessage);
-            }}
+            value={name}
+            onChange={handleNameChange}
           />
           <span
             className={`form__error person-error`}
@@ -48,15 +57,8 @@ function EditProfile({ isSaving, user, handleApiRequest }) {
             required
             minLength='2'
             maxLength='200'
-            value={profilePopupUser.about}
-            onChange={(evt) => {
-              setProfilePopupUser({
-                ...profilePopupUser,
-                about: evt.target.value,
-              });
-              // setIsValidAbout(evt.target.validity.valid);
-              // setAboutErrorMessage(evt.target.validationMessage);
-            }}
+            value={about}
+            onChange={handleAboutChange}
           />
           <span
             className={`form__error about-error `}

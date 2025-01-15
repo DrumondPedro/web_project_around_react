@@ -11,13 +11,12 @@ import Card from './components/Card/Card';
 
 import CurrentUserContext from '../../contexts/CurrentUserContext';
 
-function Main({ client }) {
+function Main({ client, popup, onOpenPopup, onClosePopup }) {
+  const { currentUser } = useContext(CurrentUserContext);
+
   const [cards, setCards] = useState([]);
 
-  const [popup, setPopup] = useState(null);
   // const [isSavingPopupData, setIsSavingPopupData] = useState('false');
-
-  const currentUser = useContext(CurrentUserContext);
 
   const editAvatarPopup = {
     title: 'Alterar a foto do perfil',
@@ -26,26 +25,13 @@ function Main({ client }) {
 
   const editProfilePopup = {
     title: 'Editar perfil',
-    children: (
-      <EditProfile
-        user={currentUser}
-        handleApiRequest={handleProfilePopupSubimit}
-      />
-    ),
+    children: <EditProfile />,
   };
 
   const newCardPopup = {
     title: 'Novo local',
     children: <NewCard handleApiRequest={handleGalerryPopupSubimit} />,
   };
-
-  function handleOpenPopup(popup) {
-    setPopup(popup);
-  }
-
-  function handleClosePopup() {
-    setPopup(null);
-  }
 
   function handlePicturePopupSubimit(picture) {
     // setIsSavingPopupData(true);
@@ -59,35 +45,13 @@ function Main({ client }) {
       })
       .then((data) => {
         setUser(data);
-        handleClosePopup();
+        onClosePopup();
         // setIsSavingPopupData(false);
       })
       .catch((err) => {
-        handleClosePopup();
+        onClosePopup();
         // setIsSavingPopupData(false);
         console.log(`${err} - Erro no PATCH /users/me/avatar`);
-      });
-  }
-
-  function handleProfilePopupSubimit(userData) {
-    // setIsSavingPopupData(true);
-    client
-      .updateUserInfo(userData, '/users/me')
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .then((data) => {
-        setUser(data);
-        handleClosePopup();
-        // setIsSavingPopupData(false);
-      })
-      .catch((err) => {
-        handleClosePopup();
-        // setIsSavingPopupData(false);
-        console.log(`${err} - Erro no PACH /users/me`);
       });
   }
 
@@ -103,46 +67,46 @@ function Main({ client }) {
       })
       .then((newCard) => {
         setCards([newCard, ...cards]);
-        handleClosePopup();
+        onClosePopup();
         // setIsSavingPopupData(false);
       })
       .catch((err) => {
-        handleClosePopup();
+        onClosePopup();
         // setIsSavingPopupData(false);
         console.log(`${err} - Erro no POST /cards`);
       });
   }
 
-  // function handleDeleteCard() {
-  //   // setIsSavingPopupData(true);
-  //   client
-  //     .deleteCard(selectedCardId, '/cards')
-  //     .then((res) => {
-  //       if (res.ok) {
-  //         return res.json();
-  //       }
-  //       return Promise.reject(`Error: ${res.status}`);
-  //     })
-  //     .then(() => {
-  //       setCards(cards.filter((card) => card._id !== selectedCardId));
-  //       closeAllPopups();
-  //       // setIsSavingPopupData(false);
-  //       setSelectedCardId('');
-  //     })
-  //     .catch((err) => {
-  //       closeAllPopups();
-  //       // setIsSavingPopupData(false);
-  //       console.log(`${err} - Erro no DELETE /cards`);
-  //       setSelectedCardId('');
-  //     });
-  // }
-
+  function handleDeleteCard(selectedCardId) {
+    // setIsSavingPopupData(true);
+    client
+      .deleteCard(selectedCardId, '/cards')
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Error: ${res.status}`);
+      })
+      .then(() => {
+        setCards(cards.filter((card) => card._id !== selectedCardId));
+        closeAllPopups();
+        // setIsSavingPopupData(false);
+        setSelectedCardId('');
+      })
+      .catch((err) => {
+        closeAllPopups();
+        // setIsSavingPopupData(false);
+        console.log(`${err} - Erro no DELETE /cards`);
+        setSelectedCardId('');
+      });
+  }
+  // nova função para deletar card !!!!!!!!!!!!!!!!
   // function handleDeletePlaceClick(cardId) {
   //   setDeletePlacePopupOpen(true);
   //   setSelectedCardId(cardId);
   // }
 
-  function handleLikeCard(id, path, executor) {
+  function handleCardLike(id, path, executor) {
     client
       .like(id, path)
       .then((res) => {
@@ -201,7 +165,7 @@ function Main({ client }) {
         <button
           className='profile__picture-edit-button '
           onClick={() => {
-            handleOpenPopup(editAvatarPopup);
+            onOpenPopup(editAvatarPopup);
           }}
         ></button>
         <img
@@ -215,7 +179,7 @@ function Main({ client }) {
             <button
               className='profile__edit-button'
               onClick={() => {
-                handleOpenPopup(editProfilePopup);
+                onOpenPopup(editProfilePopup);
               }}
             >
               <img
@@ -230,7 +194,7 @@ function Main({ client }) {
         <button
           className='profile__add-button'
           onClick={() => {
-            handleOpenPopup(newCardPopup);
+            onOpenPopup(newCardPopup);
           }}
         >
           <img
@@ -247,16 +211,16 @@ function Main({ client }) {
               key={i}
               card={card}
               userId={currentUser._id}
-              // onDelete={handleDeletePlaceClick}
-              handleOpenPopup={handleOpenPopup}
+              onDelete={handleDeleteCard}
+              onOpenPopup={onOpenPopup}
               onDeslikeClick={handleDisikeCard}
-              onLikeClick={handleLikeCard}
+              onLikeClick={handleCardLike}
             ></Card>
           ))}
         </ul>
       </section>
       {popup && (
-        <Popup title={popup.title} onClose={handleClosePopup}>
+        <Popup title={popup.title} onClose={onClosePopup}>
           {popup.children}
         </Popup>
       )}
