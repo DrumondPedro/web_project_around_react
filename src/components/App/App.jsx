@@ -51,6 +51,28 @@ function App() {
       });
   };
 
+  const handleUpdateAvatar = (picture) => {
+    // setIsSavingPopupData(true);
+    client
+      .updateUserAvatar(picture, '/users/me/avatar')
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Error: ${res.status}`);
+      })
+      .then((data) => {
+        setCurrentUser(data);
+        handleClosePopup();
+        // setIsSavingPopupData(false);
+      })
+      .catch((err) => {
+        handleClosePopup();
+        // setIsSavingPopupData(false);
+        console.log(`${err} - Erro no PATCH /users/me/avatar`);
+      });
+  };
+
   useEffect(() => {
     client
       .getUserInfo('/users/me')
@@ -80,19 +102,10 @@ function App() {
               popup={popup}
               onOpenPopup={handleOpenPopup}
               onClosePopup={handleClosePopup}
+              onUpdateAvatar={handleUpdateAvatar}
             ></Main>
             <Footer />
           </div>
-          {/* <PopupWithForm
-          // name={`confirmer`}
-          onClose={closeAllPopups}
-          title={`Tem certeza?`}
-          buttonText={`Sim`}
-          isOpen={isDeletePlacePopupOpen}
-          isSaving={isSavingPopupData}
-          isActive={true}
-          handleApiRequest={handleDeleteCard}
-          ></PopupWithForm> */}
         </div>
       </CurrentUserContext.Provider>
     </>

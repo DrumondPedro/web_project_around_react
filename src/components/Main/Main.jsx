@@ -11,7 +11,7 @@ import Card from './components/Card/Card';
 
 import CurrentUserContext from '../../contexts/CurrentUserContext';
 
-function Main({ client, popup, onOpenPopup, onClosePopup }) {
+function Main({ client, popup, onOpenPopup, onClosePopup, onUpdateAvatar }) {
   const { currentUser } = useContext(CurrentUserContext);
 
   const [cards, setCards] = useState([]);
@@ -20,7 +20,7 @@ function Main({ client, popup, onOpenPopup, onClosePopup }) {
 
   const editAvatarPopup = {
     title: 'Alterar a foto do perfil',
-    children: <EditAvatar handleApiRequest={handlePicturePopupSubimit} />,
+    children: <EditAvatar onUpdateAvatar={onUpdateAvatar} />,
   };
 
   const editProfilePopup = {
@@ -32,28 +32,6 @@ function Main({ client, popup, onOpenPopup, onClosePopup }) {
     title: 'Novo local',
     children: <NewCard handleApiRequest={handleGalerryPopupSubimit} />,
   };
-
-  function handlePicturePopupSubimit(picture) {
-    // setIsSavingPopupData(true);
-    client
-      .updateUserAvatar(picture, '/users/me/avatar')
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .then((data) => {
-        setUser(data);
-        onClosePopup();
-        // setIsSavingPopupData(false);
-      })
-      .catch((err) => {
-        onClosePopup();
-        // setIsSavingPopupData(false);
-        console.log(`${err} - Erro no PATCH /users/me/avatar`);
-      });
-  }
 
   function handleGalerryPopupSubimit(newCardData) {
     // setIsSavingPopupData(true);

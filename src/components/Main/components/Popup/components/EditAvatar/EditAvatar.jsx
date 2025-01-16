@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
-function EditAvatar({ isSaving, handleApiRequest }) {
-  const [picture, setPicture] = useState('');
+function EditAvatar({ isSaving, onUpdateAvatar }) {
+  const picutre = useRef();
 
   function handleSubimit(evt) {
     evt.preventDefault();
-    handleApiRequest(picture);
+    onUpdateAvatar(picutre.current.value);
   }
   return (
     <form onSubmit={handleSubimit} className={`form editor__form`} noValidate>
@@ -18,17 +18,16 @@ function EditAvatar({ isSaving, handleApiRequest }) {
             id='picture'
             placeholder='Link da foto'
             required
-            value={picture}
-            onChange={(evt) => {
-              setPicture(evt.target.value);
-              // setIsValidAvatarLink(evt.target.validity.valid);
-              // setAvatarLinkErrorMessage(evt.target.validationMessage);
-              // setAvatarButtonState(
-              //   Array.from(
-              //     evt.target.parentElement.parentElement.parentElement.elements
-              //   ).every((input) => input.validity.valid)
-              // );
-            }}
+            ref={picutre}
+            // onChange={(evt) => {
+            //   // setIsValidAvatarLink(evt.target.validity.valid);
+            //   // setAvatarLinkErrorMessage(evt.target.validationMessage);
+            //   // setAvatarButtonState(
+            //   //   Array.from(
+            //   //     evt.target.parentElement.parentElement.parentElement.elements
+            //   //   ).every((input) => input.validity.valid)
+            //   // );
+            // }}
           />
           <span
             className={`form__error about-error `}
