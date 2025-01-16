@@ -21,6 +21,8 @@ function App() {
 
   const [popup, setPopup] = useState(null);
 
+  const [cards, setCards] = useState([]);
+
   function handleOpenPopup(popup) {
     setPopup(popup);
   }
@@ -73,6 +75,91 @@ function App() {
       });
   };
 
+  function handleGalerryPopupSubimit(newCardData) {
+    // setIsSavingPopupData(true);
+    client
+      .addNewCard(newCardData, '/cards')
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Error: ${res.status}`);
+      })
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+        handleClosePopup();
+        // setIsSavingPopupData(false);
+      })
+      .catch((err) => {
+        handleClosePopup();
+        // setIsSavingPopupData(false);
+        console.log(`${err} - Erro no POST /cards`);
+      });
+  }
+
+  function handleCardDelete(selectedCardId) {
+    // setIsSavingPopupData(true);
+    client
+      .deleteCard(selectedCardId, '/cards')
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Error: ${res.status}`);
+      })
+      .then(() => {
+        setCards(cards.filter((card) => card._id !== selectedCardId));
+        handleClosePopup();
+        // setIsSavingPopupData(false);
+        // setSelectedCardId('');
+      })
+      .catch((err) => {
+        handleClosePopup();
+        // setIsSavingPopupData(false);
+        console.log(`${err} - Erro no DELETE /cards`);
+        // setSelectedCardId('');
+      });
+  }
+  // nova função para deletar card !!!!!!!!!!!!!!!!
+  // function handleDeletePlaceClick(cardId) {
+  //   setDeletePlacePopupOpen(true);
+  //   setSelectedCardId(cardId);
+  // }
+
+  function handleCardLike(id, path, executor) {
+    client
+      .like(id, path)
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Error: ${res.status}`);
+      })
+      .then((res) => {
+        executor(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  function handleCardDisike(id, path, executor) {
+    client
+      .dislike(id, path)
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Error: ${res.status}`);
+      })
+      .then((res) => {
+        executor(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   useEffect(() => {
     client
       .getUserInfo('/users/me')
@@ -89,6 +176,23 @@ function App() {
         console.log(err);
         console.log('Erro no GET /users/me');
       });
+
+    client
+      .getInitialCards('/cards')
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Error: ${res.status}`);
+      })
+      .then((data) => {
+        setCards(data);
+      })
+      .catch((err) => {
+        console.log(err);
+        console.log('Erro no GET /cards');
+        setCards([]);
+      });
   }, []);
 
   return (
@@ -103,6 +207,11 @@ function App() {
               onOpenPopup={handleOpenPopup}
               onClosePopup={handleClosePopup}
               onUpdateAvatar={handleUpdateAvatar}
+              cards={cards}
+              onAddPlaceSubmit={handleGalerryPopupSubimit}
+              onCardDelete={handleCardDelete}
+              onCardLike={handleCardLike}
+              onCardDislike={handleCardDisike}
             ></Main>
             <Footer />
           </div>

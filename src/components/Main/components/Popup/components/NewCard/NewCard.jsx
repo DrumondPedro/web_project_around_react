@@ -1,11 +1,24 @@
 import { useState } from 'react';
 
-function NewCard({ isSaving, handleApiRequest }) {
-  const [newCardData, setNewCardData] = useState({ title: '', link: '' });
+function NewCard({ isSaving, onAddPlaceSubmit }) {
+  const [title, setTitle] = useState();
+  const [link, setLink] = useState();
+
+  const handleTitleChange = (evt) => {
+    setTitle(evt.target.value);
+    // setIsValidTitle(evt.target.validity.valid);
+    // setTitleErrorMessage(evt.target.validationMessage);
+  };
+
+  const handleLinkChange = (evt) => {
+    setLink(evt.target.value);
+    // setIsValidLink(evt.target.validity.valid);
+    // setLinkErrorMessage(evt.target.validationMessage);
+  };
 
   function handleSubimit(evt) {
     evt.preventDefault();
-    handleApiRequest(newCardData);
+    onAddPlaceSubmit({ title, link });
   }
 
   return (
@@ -21,12 +34,8 @@ function NewCard({ isSaving, handleApiRequest }) {
             required
             minLength='2'
             maxLength='30'
-            value={newCardData.title}
-            onChange={(evt) => {
-              setNewCardData({ ...newCardData, title: evt.target.value });
-              // setIsValidTitle(evt.target.validity.valid);
-              // setTitleErrorMessage(evt.target.validationMessage);
-            }}
+            value={title}
+            onChange={handleTitleChange}
           />
           <span
             className={`form__error about-error `}
@@ -43,12 +52,8 @@ function NewCard({ isSaving, handleApiRequest }) {
             id='link'
             placeholder='Link de imagem'
             required
-            value={newCardData.link}
-            onChange={(evt) => {
-              setNewCardData({ ...newCardData, link: evt.target.value });
-              // setIsValidLink(evt.target.validity.valid);
-              // setLinkErrorMessage(evt.target.validationMessage);
-            }}
+            value={link}
+            onChange={handleLinkChange}
           />
           <span
             className={`form__error about-error `}

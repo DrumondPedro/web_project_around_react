@@ -11,10 +11,19 @@ import Card from './components/Card/Card';
 
 import CurrentUserContext from '../../contexts/CurrentUserContext';
 
-function Main({ client, popup, onOpenPopup, onClosePopup, onUpdateAvatar }) {
+function Main({
+  client,
+  popup,
+  onOpenPopup,
+  onClosePopup,
+  onUpdateAvatar,
+  cards,
+  onAddPlaceSubmit,
+  onCardDelete,
+  onCardLike,
+  onCardDislike,
+}) {
   const { currentUser } = useContext(CurrentUserContext);
-
-  const [cards, setCards] = useState([]);
 
   // const [isSavingPopupData, setIsSavingPopupData] = useState('false');
 
@@ -30,112 +39,8 @@ function Main({ client, popup, onOpenPopup, onClosePopup, onUpdateAvatar }) {
 
   const newCardPopup = {
     title: 'Novo local',
-    children: <NewCard handleApiRequest={handleGalerryPopupSubimit} />,
+    children: <NewCard onAddPlaceSubmit={onAddPlaceSubmit} />,
   };
-
-  function handleGalerryPopupSubimit(newCardData) {
-    // setIsSavingPopupData(true);
-    client
-      .addNewCard(newCardData, '/cards')
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .then((newCard) => {
-        setCards([newCard, ...cards]);
-        onClosePopup();
-        // setIsSavingPopupData(false);
-      })
-      .catch((err) => {
-        onClosePopup();
-        // setIsSavingPopupData(false);
-        console.log(`${err} - Erro no POST /cards`);
-      });
-  }
-
-  function handleDeleteCard(selectedCardId) {
-    // setIsSavingPopupData(true);
-    client
-      .deleteCard(selectedCardId, '/cards')
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .then(() => {
-        setCards(cards.filter((card) => card._id !== selectedCardId));
-        closeAllPopups();
-        // setIsSavingPopupData(false);
-        setSelectedCardId('');
-      })
-      .catch((err) => {
-        closeAllPopups();
-        // setIsSavingPopupData(false);
-        console.log(`${err} - Erro no DELETE /cards`);
-        setSelectedCardId('');
-      });
-  }
-  // nova função para deletar card !!!!!!!!!!!!!!!!
-  // function handleDeletePlaceClick(cardId) {
-  //   setDeletePlacePopupOpen(true);
-  //   setSelectedCardId(cardId);
-  // }
-
-  function handleCardLike(id, path, executor) {
-    client
-      .like(id, path)
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .then((res) => {
-        executor(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  function handleDisikeCard(id, path, executor) {
-    client
-      .dislike(id, path)
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .then((res) => {
-        executor(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  useEffect(() => {
-    client
-      .getInitialCards('/cards')
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .then((data) => {
-        setCards(data);
-      })
-      .catch((err) => {
-        console.log(err);
-        console.log('Erro no GET /cards');
-        setCards([]);
-      });
-  }, []);
 
   return (
     <main className='content'>
@@ -189,10 +94,10 @@ function Main({ client, popup, onOpenPopup, onClosePopup, onUpdateAvatar }) {
               key={i}
               card={card}
               userId={currentUser._id}
-              onDelete={handleDeleteCard}
+              onDelete={onCardDelete}
               onOpenPopup={onOpenPopup}
-              onDeslikeClick={handleDisikeCard}
-              onLikeClick={handleCardLike}
+              onDeslikeClick={onCardDislike}
+              onLikeClick={onCardLike}
             ></Card>
           ))}
         </ul>
