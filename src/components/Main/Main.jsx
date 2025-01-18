@@ -94,7 +94,7 @@ function Main({
               key={i}
               card={card}
               userId={currentUser._id}
-              onDelete={onCardDelete}
+              onCardDelete={onCardDelete}
               onOpenPopup={onOpenPopup}
               onDeslikeClick={onCardDislike}
               onLikeClick={onCardLike}

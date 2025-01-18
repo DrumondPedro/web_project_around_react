@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import deleteButton from '../../../../assets/images/gallery/gallery_card_delete_button.svg';
 
 import ImagePopup from '../Popup/components/ImagePopup/ImagePopup';
-
+import ConfirmDeletion from '../Popup/components/ConfirmDeletion/ConfirmDeletion';
 function Card({
   card,
   userId,
-  onDelete,
+  onCardDelete,
   onOpenPopup,
   onDeslikeClick,
   onLikeClick,
@@ -17,16 +17,25 @@ function Card({
     children: <ImagePopup card={currentCard} />,
   };
 
+  const ConfirmDeletionPopup = {
+    title: 'Tem certeza?',
+    children: <ConfirmDeletion onConfirm={handleDelete} />,
+  };
+
   useEffect(() => {
     setCurrentCard(card);
   }, [card]);
 
   function handleDelete() {
     if (currentCard.owner._id === userId) {
-      onDelete(currentCard._id);
+      onCardDelete(currentCard._id);
     } else {
       console.error('O usuário não é dono desse card');
     }
+  }
+
+  function handleDeleteButtonClick() {
+    onOpenPopup(ConfirmDeletionPopup);
   }
 
   function handleCardClick() {
@@ -52,7 +61,7 @@ function Card({
   return (
     <li className='gallery__card'>
       <img
-        onClick={handleDelete}
+        onClick={handleDeleteButtonClick}
         src={deleteButton}
         alt='Ícone de uma lixeira'
         className={`gallery__card-delete-button ${

@@ -57,26 +57,26 @@ function App() {
 
   const handleUpdateAvatar = (picture) => {
     // console.log(isSavingPopupData);
-    // client
-    //   .updateUserAvatar(picture, '/users/me/avatar')
-    //   .then((res) => {
-    //     if (res.ok) {
-    //       return res.json();
-    //     }
-    //     return Promise.reject(`Error: ${res.status}`);
-    //   })
-    //   .then((data) => {
-    //     setCurrentUser(data);
-    //     handleClosePopup();
-    //     setIsSavingPopupData(false);
-    //     console.log(isSavingPopupData);
-    //   })
-    //   .catch((err) => {
-    //     handleClosePopup();
-    //     setIsSavingPopupData(false);
-    //     console.log(isSavingPopupData);
-    //     console.log(`${err} - Erro no PATCH /users/me/avatar`);
-    //   });
+    client
+      .updateUserAvatar(picture, '/users/me/avatar')
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Error: ${res.status}`);
+      })
+      .then((data) => {
+        setCurrentUser(data);
+        handleClosePopup();
+        // setIsSavingPopupData(false);
+        // console.log(isSavingPopupData);
+      })
+      .catch((err) => {
+        handleClosePopup();
+        // setIsSavingPopupData(false);
+        // console.log(isSavingPopupData);
+        console.log(`${err} - Erro no PATCH /users/me/avatar`);
+      });
   };
 
   function handleGalerryPopupSubimit(newCardData) {
@@ -115,20 +115,13 @@ function App() {
         setCards(cards.filter((card) => card._id !== selectedCardId));
         handleClosePopup();
         // setIsSavingPopupData(false);
-        // setSelectedCardId('');
       })
       .catch((err) => {
         handleClosePopup();
         // setIsSavingPopupData(false);
         console.log(`${err} - Erro no DELETE /cards`);
-        // setSelectedCardId('');
       });
   }
-
-  // function handleDeletePlaceClick(cardId) {
-  //   setDeletePlacePopupOpen(true);
-  //   setSelectedCardId(cardId);
-  // }
 
   function handleCardLike(id, path, executor) {
     client
