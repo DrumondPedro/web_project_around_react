@@ -23,6 +23,8 @@ function App() {
 
   const [cards, setCards] = useState([]);
 
+  // const [isSavingPopupData, setIsSavingPopupData] = useState('true');
+
   function handleOpenPopup(popup) {
     setPopup(popup);
   }
@@ -54,25 +56,27 @@ function App() {
   };
 
   const handleUpdateAvatar = (picture) => {
-    // setIsSavingPopupData(true);
-    client
-      .updateUserAvatar(picture, '/users/me/avatar')
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .then((data) => {
-        setCurrentUser(data);
-        handleClosePopup();
-        // setIsSavingPopupData(false);
-      })
-      .catch((err) => {
-        handleClosePopup();
-        // setIsSavingPopupData(false);
-        console.log(`${err} - Erro no PATCH /users/me/avatar`);
-      });
+    // console.log(isSavingPopupData);
+    // client
+    //   .updateUserAvatar(picture, '/users/me/avatar')
+    //   .then((res) => {
+    //     if (res.ok) {
+    //       return res.json();
+    //     }
+    //     return Promise.reject(`Error: ${res.status}`);
+    //   })
+    //   .then((data) => {
+    //     setCurrentUser(data);
+    //     handleClosePopup();
+    //     setIsSavingPopupData(false);
+    //     console.log(isSavingPopupData);
+    //   })
+    //   .catch((err) => {
+    //     handleClosePopup();
+    //     setIsSavingPopupData(false);
+    //     console.log(isSavingPopupData);
+    //     console.log(`${err} - Erro no PATCH /users/me/avatar`);
+    //   });
   };
 
   function handleGalerryPopupSubimit(newCardData) {
@@ -120,7 +124,7 @@ function App() {
         // setSelectedCardId('');
       });
   }
-  // nova função para deletar card !!!!!!!!!!!!!!!!
+
   // function handleDeletePlaceClick(cardId) {
   //   setDeletePlacePopupOpen(true);
   //   setSelectedCardId(cardId);
@@ -202,11 +206,11 @@ function App() {
           <div className='page'>
             <Header />
             <Main
-              client={client}
               popup={popup}
               onOpenPopup={handleOpenPopup}
               onClosePopup={handleClosePopup}
               onUpdateAvatar={handleUpdateAvatar}
+              // isSaving={isSavingPopupData}
               cards={cards}
               onAddPlaceSubmit={handleGalerryPopupSubimit}
               onCardDelete={handleCardDelete}

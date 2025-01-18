@@ -12,11 +12,11 @@ import Card from './components/Card/Card';
 import CurrentUserContext from '../../contexts/CurrentUserContext';
 
 function Main({
-  client,
   popup,
   onOpenPopup,
   onClosePopup,
   onUpdateAvatar,
+  isSaving,
   cards,
   onAddPlaceSubmit,
   onCardDelete,
@@ -25,11 +25,11 @@ function Main({
 }) {
   const { currentUser } = useContext(CurrentUserContext);
 
-  // const [isSavingPopupData, setIsSavingPopupData] = useState('false');
-
   const editAvatarPopup = {
     title: 'Alterar a foto do perfil',
-    children: <EditAvatar onUpdateAvatar={onUpdateAvatar} />,
+    children: (
+      <EditAvatar onUpdateAvatar={onUpdateAvatar} isSaving={isSaving} />
+    ),
   };
 
   const editProfilePopup = {
