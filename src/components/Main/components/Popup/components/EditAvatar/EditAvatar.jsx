@@ -1,6 +1,10 @@
-import { useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 
-function EditAvatar({ onUpdateAvatar, isSaving }) {
+import LoadingContext from '../../../../../../contexts/LoadingContext';
+
+function EditAvatar({ onUpdateAvatar }) {
+  const isSaving = useContext(LoadingContext);
+
   const picture = useRef();
 
   const [isValid, setIsValid] = useState(true);
@@ -43,10 +47,10 @@ function EditAvatar({ onUpdateAvatar, isSaving }) {
       </fieldset>
       <button
         type='submit'
-        // disabled={isSaving}
+        disabled={isSaving}
         className={`form__submit-button 
-          ${isActive ? `` : `form__submit-button-inactive`}`}
-        //  ${isSaving ? 'form__submit-button-inactive' : ''}
+          ${isActive ? `` : `form__submit-button-inactive`}
+          ${isSaving ? 'form__submit-button-inactive' : ''}`}
       >
         {`${isSaving ? 'Salvando...' : 'Salvar'}`}
       </button>

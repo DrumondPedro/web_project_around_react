@@ -9,6 +9,7 @@ import Footer from '../Footer/Footer';
 import client from '../../utils/api';
 
 import CurrentUserContext from '../../contexts/CurrentUserContext';
+import LoadingContext from '../../contexts/LoadingContext';
 
 function App() {
   const [currentUser, setCurrentUser] = useState({
@@ -23,7 +24,7 @@ function App() {
 
   const [cards, setCards] = useState([]);
 
-  // const [isSavingPopupData, setIsSavingPopupData] = useState('true');
+  const [isLoading, setIsLoading] = useState(false);
 
   function handleOpenPopup(popup) {
     setPopup(popup);
@@ -34,7 +35,7 @@ function App() {
   }
 
   const handleUpdateUser = (userData) => {
-    // setIsSavingPopupData(true);
+    setIsLoading(true);
     client
       .updateUserInfo(userData, '/users/me')
       .then((res) => {
@@ -46,17 +47,17 @@ function App() {
       .then((data) => {
         setCurrentUser(data);
         handleClosePopup();
-        // setIsSavingPopupData(false);
+        setIsLoading(false);
       })
       .catch((err) => {
         handleClosePopup();
-        // setIsSavingPopupData(false);
+        setIsLoading(false);
         console.log(`${err} - Erro no PACH /users/me`);
       });
   };
 
   const handleUpdateAvatar = (picture) => {
-    // console.log(isSavingPopupData);
+    setIsLoading(true);
     client
       .updateUserAvatar(picture, '/users/me/avatar')
       .then((res) => {
@@ -68,19 +69,17 @@ function App() {
       .then((data) => {
         setCurrentUser(data);
         handleClosePopup();
-        // setIsSavingPopupData(false);
-        // console.log(isSavingPopupData);
+        setIsLoading(false);
       })
       .catch((err) => {
         handleClosePopup();
-        // setIsSavingPopupData(false);
-        // console.log(isSavingPopupData);
+        setIsLoading(false);
         console.log(`${err} - Erro no PATCH /users/me/avatar`);
       });
   };
 
   function handleGalerryPopupSubimit(newCardData) {
-    // setIsSavingPopupData(true);
+    setIsLoading(true);
     client
       .addNewCard(newCardData, '/cards')
       .then((res) => {
@@ -92,17 +91,17 @@ function App() {
       .then((newCard) => {
         setCards([newCard, ...cards]);
         handleClosePopup();
-        // setIsSavingPopupData(false);
+        setIsLoading(false);
       })
       .catch((err) => {
         handleClosePopup();
-        // setIsSavingPopupData(false);
+        setIsLoading(false);
         console.log(`${err} - Erro no POST /cards`);
       });
   }
 
   function handleCardDelete(selectedCardId) {
-    // setIsSavingPopupData(true);
+    setIsLoading(true);
     client
       .deleteCard(selectedCardId, '/cards')
       .then((res) => {
@@ -114,11 +113,11 @@ function App() {
       .then(() => {
         setCards(cards.filter((card) => card._id !== selectedCardId));
         handleClosePopup();
-        // setIsSavingPopupData(false);
+        setIsLoading(false);
       })
       .catch((err) => {
         handleClosePopup();
-        // setIsSavingPopupData(false);
+        setIsLoading(false);
         console.log(`${err} - Erro no DELETE /cards`);
       });
   }
@@ -195,24 +194,25 @@ function App() {
   return (
     <>
       <CurrentUserContext.Provider value={{ currentUser, handleUpdateUser }}>
-        <div className='body'>
-          <div className='page'>
-            <Header />
-            <Main
-              popup={popup}
-              onOpenPopup={handleOpenPopup}
-              onClosePopup={handleClosePopup}
-              onUpdateAvatar={handleUpdateAvatar}
-              // isSaving={isSavingPopupData}
-              cards={cards}
-              onAddPlaceSubmit={handleGalerryPopupSubimit}
-              onCardDelete={handleCardDelete}
-              onCardLike={handleCardLike}
-              onCardDislike={handleCardDisike}
-            ></Main>
-            <Footer />
+        <LoadingContext.Provider value={isLoading}>
+          <div className='body'>
+            <div className='page'>
+              <Header />
+              <Main
+                popup={popup}
+                onOpenPopup={handleOpenPopup}
+                onClosePopup={handleClosePopup}
+                onUpdateAvatar={handleUpdateAvatar}
+                cards={cards}
+                onAddPlaceSubmit={handleGalerryPopupSubimit}
+                onCardDelete={handleCardDelete}
+                onCardLike={handleCardLike}
+                onCardDislike={handleCardDisike}
+              ></Main>
+              <Footer />
+            </div>
           </div>
-        </div>
+        </LoadingContext.Provider>
       </CurrentUserContext.Provider>
     </>
   );

@@ -16,7 +16,6 @@ function Main({
   onOpenPopup,
   onClosePopup,
   onUpdateAvatar,
-  isSaving,
   cards,
   onAddPlaceSubmit,
   onCardDelete,
@@ -27,9 +26,7 @@ function Main({
 
   const editAvatarPopup = {
     title: 'Alterar a foto do perfil',
-    children: (
-      <EditAvatar onUpdateAvatar={onUpdateAvatar} isSaving={isSaving} />
-    ),
+    children: <EditAvatar onUpdateAvatar={onUpdateAvatar} />,
   };
 
   const editProfilePopup = {

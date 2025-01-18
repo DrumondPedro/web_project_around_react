@@ -1,8 +1,10 @@
 import { useContext, useRef, useState } from 'react';
 
 import CurrentUserContext from '../../../../../../contexts/CurrentUserContext';
+import LoadingContext from '../../../../../../contexts/LoadingContext';
 
-function EditProfile({ isSaving }) {
+function EditProfile() {
+  const isSaving = useContext(LoadingContext);
   const { currentUser, handleUpdateUser } = useContext(CurrentUserContext);
 
   const nameRef = useRef();
@@ -94,10 +96,10 @@ function EditProfile({ isSaving }) {
       </fieldset>
       <button
         type='submit'
-        // disabled={isSaving}
-        className={`form__submit-button 
-        ${isActive ? `` : `form__submit-button-inactive`}`}
-        // ${isSaving ? 'form__submit-button-inactive' : ''}
+        disabled={isSaving}
+        className={`form__submit-button
+          ${isActive ? `` : `form__submit-button-inactive`}
+          ${isSaving ? 'form__submit-button-inactive' : ''}`}
       >
         {`${isSaving ? 'Salvando...' : `Salvar`}`}
       </button>
