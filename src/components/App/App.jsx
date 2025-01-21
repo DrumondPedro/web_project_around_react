@@ -38,12 +38,6 @@ function App() {
     setIsLoading(true);
     client
       .updateUserInfo(userData, '/users/me')
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
       .then((data) => {
         setCurrentUser(data);
         handleClosePopup();
@@ -60,12 +54,6 @@ function App() {
     setIsLoading(true);
     client
       .updateUserAvatar(picture, '/users/me/avatar')
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
       .then((data) => {
         setCurrentUser(data);
         handleClosePopup();
@@ -82,12 +70,6 @@ function App() {
     setIsLoading(true);
     client
       .addNewCard(newCardData, '/cards')
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
       .then((newCard) => {
         setCards([newCard, ...cards]);
         handleClosePopup();
@@ -104,12 +86,6 @@ function App() {
     setIsLoading(true);
     client
       .deleteCard(selectedCardId, '/cards')
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
       .then(() => {
         setCards(cards.filter((card) => card._id !== selectedCardId));
         handleClosePopup();
@@ -126,12 +102,6 @@ function App() {
     client
       .like(id, path)
       .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .then((res) => {
         executor(res);
       })
       .catch((err) => {
@@ -143,12 +113,6 @@ function App() {
     client
       .dislike(id, path)
       .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .then((res) => {
         executor(res);
       })
       .catch((err) => {
@@ -159,12 +123,6 @@ function App() {
   useEffect(() => {
     client
       .getUserInfo('/users/me')
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
       .then((data) => {
         setCurrentUser(data);
       })
@@ -175,12 +133,6 @@ function App() {
 
     client
       .getInitialCards('/cards')
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
       .then((data) => {
         setCards(data);
       })

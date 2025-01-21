@@ -4,88 +4,61 @@ class Api {
     this._userAuthorization = userAuthorization;
   }
 
-  getInitialCards(path) {
-    return fetch(`${this._baseURL}${path}`, {
-      method: 'GET',
-      headers: {
-        authorization: this._userAuthorization,
-      },
+  _makeRequest(path, method = 'GET', body = null) {
+    const options = {
+      method,
+      headers: { ...this.headers, authorization: this._userAuthorization },
+    };
+
+    if (body) {
+      options.headers['Content-Type'] = 'application/json';
+      options.body = JSON.stringify(body);
+    }
+
+    return fetch(`${this._baseURL}${path}`, options).then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Error: ${res.status}`);
     });
   }
 
+  getInitialCards(path) {
+    return this._makeRequest(path);
+  }
+
   addNewCard({ title: cardName, link: cardLink }, path) {
-    return fetch(`${this._baseURL}${path}`, {
-      method: 'POST',
-      headers: {
-        authorization: this._userAuthorization,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: `${cardName}`,
-        link: `${cardLink}`,
-      }),
+    return this._makeRequest(path, 'POST', {
+      name: `${cardName}`,
+      link: `${cardLink}`,
     });
   }
 
   deleteCard(cardId, path) {
-    return fetch(`${this._baseURL}${path}/${cardId}`, {
-      method: 'DELETE',
-      headers: {
-        authorization: this._userAuthorization,
-      },
-    });
+    return this._makeRequest(`${path}/${cardId}`, 'DELETE');
   }
 
   getUserInfo(path) {
-    return fetch(`${this._baseURL}${path}`, {
-      method: 'GET',
-      headers: {
-        authorization: this._userAuthorization,
-      },
-    });
+    return this._makeRequest(path);
   }
 
   updateUserInfo({ name: userName, about: userAbout }, path) {
-    return fetch(`${this._baseURL}${path}`, {
-      method: 'PATCH',
-      headers: {
-        authorization: this._userAuthorization,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: `${userName}`,
-        about: `${userAbout}`,
-      }),
+    return this._makeRequest(path, 'PATCH', {
+      name: `${userName}`,
+      about: `${userAbout}`,
     });
   }
 
   updateUserAvatar(picture, path) {
-    return fetch(`${this._baseURL}${path}`, {
-      method: 'PATCH',
-      headers: {
-        authorization: this._userAuthorization,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ avatar: `${picture}` }),
-    });
+    return this._makeRequest(path, 'PATCH', { avatar: `${picture}` });
   }
 
   like(cardId, path) {
-    return fetch(`${this._baseURL}${path}/${cardId}`, {
-      method: 'PUT',
-      headers: {
-        authorization: this._userAuthorization,
-      },
-    });
+    return this._makeRequest(`${path}/${cardId}`, 'PUT');
   }
 
   dislike(cardId, path) {
-    return fetch(`${this._baseURL}${path}/${cardId}`, {
-      method: 'DELETE',
-      headers: {
-        authorization: this._userAuthorization,
-      },
-    });
+    return this._makeRequest(`${path}/${cardId}`, 'DELETE');
   }
 }
 
