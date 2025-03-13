@@ -14,7 +14,7 @@ function Card({
   const [currentCard, setCurrentCard] = useState(card);
 
   const imagePopup = {
-    children: <ImagePopup card={currentCard} />,
+    children: <ImagePopup currentCard={currentCard} />,
   };
 
   const ConfirmDeletionPopup = {

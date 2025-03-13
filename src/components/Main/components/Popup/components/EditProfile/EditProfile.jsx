@@ -10,10 +10,12 @@ function EditProfile() {
   const nameRef = useRef();
   const aboutRef = useRef();
 
-  const [name, setName] = useState(currentUser.name);
-  const [about, setAbout] = useState(currentUser.about);
+  const [user, setUser] = useState({
+    name: currentUser.name,
+    about: currentUser.about,
+  });
 
-  const [isValid, setIsValid] = useState({ name: ' ', about: ' ' });
+  const [isValid, setIsValid] = useState({ validName: ' ', validAbout: ' ' });
   const [isActive, setIsActive] = useState(false);
   const [errorMessage, setErrorMessage] = useState({
     nameMsg: '',
@@ -21,8 +23,8 @@ function EditProfile() {
   });
 
   const handleNameChange = (evt) => {
-    setName(evt.target.value);
-    setIsValid({ ...isValid, name: nameRef.current.validity.valid });
+    setUser({ ...user, name: evt.target.value });
+    setIsValid({ ...isValid, validName: nameRef.current.validity.valid });
     setIsActive(
       nameRef.current.validity.valid && aboutRef.current.validity.valid
     );
@@ -32,8 +34,8 @@ function EditProfile() {
     });
   };
   const handleAboutChange = (evt) => {
-    setAbout(evt.target.value);
-    setIsValid({ ...isValid, about: aboutRef.current.validity.valid });
+    setUser({ ...user, about: evt.target.value });
+    setIsValid({ ...isValid, validAbout: aboutRef.current.validity.valid });
     setIsActive(
       nameRef.current.validity.valid && aboutRef.current.validity.valid
     );
@@ -45,7 +47,7 @@ function EditProfile() {
 
   function handleSubimit(evt) {
     evt.preventDefault();
-    handleUpdateUser({ name, about });
+    handleUpdateUser(user);
   }
 
   return (
@@ -55,19 +57,19 @@ function EditProfile() {
           <input
             type='text'
             className={`form__input form__input_name 
-            ${isValid.name ? `` : `form__input_type-error`}`}
+            ${isValid.validName ? `` : `form__input_type-error`}`}
             id='name'
             placeholder='Nome'
             required
             minLength='2'
             maxLength='40'
-            value={name}
+            value={user.name}
             ref={nameRef}
             onChange={handleNameChange}
           />
           <span
             className={`form__error person-error
-             ${isValid.name ? `` : `form__error_visible`}`}
+             ${isValid.validName ? `` : `form__error_visible`}`}
           >
             {errorMessage.nameMsg}
           </span>
@@ -76,19 +78,19 @@ function EditProfile() {
           <input
             type='text'
             className={`form__input form__input_about
-             ${isValid.about ? `` : `form__input_type-error`}`}
+             ${isValid.validAbout ? `` : `form__input_type-error`}`}
             id='about'
             placeholder='Sobre mim'
             required
             minLength='2'
             maxLength='200'
-            value={about}
+            value={user.about}
             ref={aboutRef}
             onChange={handleAboutChange}
           />
           <span
             className={`form__error about-error 
-             ${isValid.about ? `` : `form__error_visible`}`}
+             ${isValid.validAbout ? `` : `form__error_visible`}`}
           >
             {errorMessage.aboutMsg}
           </span>

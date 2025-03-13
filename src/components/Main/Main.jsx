@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 
-import pencilPath from '../../assets/images/profile/profile_edit_button.svg';
-import plusPath from '../../assets/images/profile/profile_add_button.svg';
+import pencil from '../../assets/images/profile/profile_edit_button.svg';
+import plus from '../../assets/images/profile/profile_add_button.svg';
 
 import Popup from './components/Popup/Popup';
 import EditAvatar from './components/Popup/components/EditAvatar/EditAvatar';
@@ -63,7 +63,7 @@ function Main({
               }}
             >
               <img
-                src={pencilPath}
+                src={pencil}
                 alt='Ícone minimalista de um lápis'
                 className='profile__edit-button-image'
               />
@@ -78,7 +78,7 @@ function Main({
           }}
         >
           <img
-            src={plusPath}
+            src={plus}
             alt='Ícone de um sinal de mais'
             className='profile__add-button-image'
           />

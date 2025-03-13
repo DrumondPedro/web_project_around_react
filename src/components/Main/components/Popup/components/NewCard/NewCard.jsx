@@ -8,10 +8,9 @@ function NewCard({ onAddPlaceSubmit }) {
   const titleRef = useRef();
   const linkRef = useRef();
 
-  const [title, setTitle] = useState();
-  const [link, setLink] = useState();
+  const [newCard, setNewCard] = useState({ title: '', link: '' });
 
-  const [isValid, setIsValid] = useState({ title: ' ', link: ' ' });
+  const [isValid, setIsValid] = useState({ validTitle: ' ', validLink: ' ' });
   const [isActive, setIsActive] = useState(false);
   const [errorMessage, setErrorMessage] = useState({
     titleMsg: '',
@@ -19,8 +18,8 @@ function NewCard({ onAddPlaceSubmit }) {
   });
 
   const handleTitleChange = (evt) => {
-    setTitle(evt.target.value);
-    setIsValid({ ...isValid, title: titleRef.current.validity.valid });
+    setNewCard({ ...newCard, title: evt.target.value });
+    setIsValid({ ...isValid, validTitle: titleRef.current.validity.valid });
     setIsActive(
       titleRef.current.validity.valid && linkRef.current.validity.valid
     );
@@ -31,8 +30,8 @@ function NewCard({ onAddPlaceSubmit }) {
   };
 
   const handleLinkChange = (evt) => {
-    setLink(evt.target.value);
-    setIsValid({ ...isValid, link: linkRef.current.validity.valid });
+    setNewCard({ ...newCard, link: evt.target.value });
+    setIsValid({ ...isValid, validLink: linkRef.current.validity.valid });
     setIsActive(
       titleRef.current.validity.valid && linkRef.current.validity.valid
     );
@@ -44,7 +43,7 @@ function NewCard({ onAddPlaceSubmit }) {
 
   function handleSubimit(evt) {
     evt.preventDefault();
-    onAddPlaceSubmit({ title, link });
+    onAddPlaceSubmit(newCard);
   }
 
   return (
@@ -54,19 +53,19 @@ function NewCard({ onAddPlaceSubmit }) {
           <input
             type='text'
             className={`form__input form__input_title
-            ${isValid.title ? `` : `form__input_type-error`}`}
+            ${isValid.validTitle ? `` : `form__input_type-error`}`}
             id='title'
             placeholder='Título'
             required
             minLength='2'
             maxLength='30'
-            value={title}
+            value={newCard.title}
             ref={titleRef}
             onChange={handleTitleChange}
           />
           <span
             className={`form__error about-error 
-            ${isValid.title ? `` : `form__error_visible`}`}
+            ${isValid.validTitle ? `` : `form__error_visible`}`}
           >
             {errorMessage.titleMsg}
           </span>
@@ -75,17 +74,17 @@ function NewCard({ onAddPlaceSubmit }) {
           <input
             type='url'
             className={`form__input form__input_link 
-            ${isValid.link ? `` : `form__input_type-error`}`}
+            ${isValid.validLink ? `` : `form__input_type-error`}`}
             id='link'
             placeholder='Link de imagem'
             required
-            value={link}
+            value={newCard.link}
             ref={linkRef}
             onChange={handleLinkChange}
           />
           <span
             className={`form__error about-error 
-            ${isValid.link ? `` : `form__error_visible`}`}
+            ${isValid.validLink ? `` : `form__error_visible`}`}
           >
             {errorMessage.linkMsg}
           </span>
