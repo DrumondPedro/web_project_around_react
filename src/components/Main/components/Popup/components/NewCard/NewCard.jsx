@@ -1,9 +1,13 @@
 import { useContext, useRef, useState } from 'react';
 
+import { CardsContext } from '../../../../../../contexts/CardsContext';
 import { LoadingContext } from '../../../../../../contexts/LoadingContext';
+import { PopupContext } from '../../../../../../contexts/PopupContext';
 
-function NewCard({ onAddPlaceSubmit }) {
-  const { isLoading } = useContext(LoadingContext);
+function NewCard() {
+  const { handleCardCreation } = useContext(CardsContext);
+  const { handleClosePopup } = useContext(PopupContext);
+  const { isLoading, setIsLoading } = useContext(LoadingContext);
 
   const titleRef = useRef();
   const linkRef = useRef();
@@ -41,9 +45,12 @@ function NewCard({ onAddPlaceSubmit }) {
     });
   };
 
-  function handleSubimit(evt) {
+  async function handleSubimit(evt) {
     evt.preventDefault();
-    onAddPlaceSubmit(newCard);
+    setIsLoading(true);
+    await handleCardCreation(newCard);
+    setIsLoading(false);
+    handleClosePopup();
   }
 
   return (

@@ -3,14 +3,19 @@ import { useContext, useEffect, useState } from 'react';
 import ImagePopup from '../Popup/components/ImagePopup/ImagePopup';
 import ConfirmDeletion from '../Popup/components/ConfirmDeletion/ConfirmDeletion';
 
-import { PopupContext } from '../../../../contexts/PopupContext';
+import { CardsContext } from '../../../../contexts/CardsContext';
 import { CurrentUserContext } from '../../../../contexts/CurrentUserContext';
+import { PopupContext } from '../../../../contexts/PopupContext';
+import { LoadingContext } from '../../../../contexts/LoadingContext';
 
 import deleteButton from '../../../../assets/images/gallery/gallery_card_delete_button.svg';
 
-function Card({ card, onCardDelete, onDeslikeClick, onLikeClick }) {
+function Card({ card }) {
+  const { handleCardDelete, handleCardLike, handleCardDisike } =
+    useContext(CardsContext);
   const { currentUser } = useContext(CurrentUserContext);
-  const { handleOpenPopup } = useContext(PopupContext);
+  const { handleOpenPopup, handleClosePopup } = useContext(PopupContext);
+  const { setIsLoading } = useContext(LoadingContext);
 
   const [currentCard, setCurrentCard] = useState(card);
 
@@ -27,9 +32,12 @@ function Card({ card, onCardDelete, onDeslikeClick, onLikeClick }) {
     setCurrentCard(card);
   }, [card]);
 
-  function handleDelete() {
+  async function handleDelete() {
     if (currentCard.owner._id === currentUser._id) {
-      onCardDelete(currentCard._id);
+      setIsLoading(true);
+      await handleCardDelete(currentCard._id);
+      setIsLoading(false);
+      handleClosePopup();
     } else {
       console.error('O usuário não é dono desse card');
     }
@@ -49,11 +57,11 @@ function Card({ card, onCardDelete, onDeslikeClick, onLikeClick }) {
         return element._id === currentUser._id;
       })
     ) {
-      onDeslikeClick(currentCard._id, '/cards/likes', (res) => {
+      handleCardDisike(currentCard._id, '/cards/likes', (res) => {
         setCurrentCard(res);
       });
     } else {
-      onLikeClick(currentCard._id, '/cards/likes', (res) => {
+      handleCardLike(currentCard._id, '/cards/likes', (res) => {
         setCurrentCard(res);
       });
     }

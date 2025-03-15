@@ -10,16 +10,12 @@ import NewCard from './components/Popup/components/NewCard/NewCard';
 import Card from './components/Card/Card';
 
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
+import { CardsContext } from '../../contexts/CardsContext';
 import { PopupContext } from '../../contexts/PopupContext';
 
-function Main({
-  cards,
-  onAddPlaceSubmit,
-  onCardDelete,
-  onCardLike,
-  onCardDislike,
-}) {
+function Main({}) {
   const { currentUser } = useContext(CurrentUserContext);
+  const { cards } = useContext(CardsContext);
   const { popup, handleOpenPopup } = useContext(PopupContext);
 
   const editAvatarPopup = {
@@ -34,7 +30,7 @@ function Main({
 
   const newCardPopup = {
     title: 'Novo local',
-    children: <NewCard onAddPlaceSubmit={onAddPlaceSubmit} />,
+    children: <NewCard />,
   };
 
   return (
@@ -85,13 +81,7 @@ function Main({
       <section className='gallery'>
         <ul className='gallery__cards'>
           {cards.map((card, i) => (
-            <Card
-              key={i}
-              card={card}
-              onCardDelete={onCardDelete}
-              onDeslikeClick={onCardDislike}
-              onLikeClick={onCardLike}
-            ></Card>
+            <Card key={i} card={card}></Card>
           ))}
         </ul>
       </section>

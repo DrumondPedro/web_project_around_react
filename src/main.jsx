@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import App from './components/App/App';
 
 import { CurrentUserProvider } from './contexts/CurrentUserContext';
+import { CardsProvider } from './contexts/CardsContext';
 import { LoadingPovider } from './contexts/LoadingContext';
 import { PopupProvider } from './contexts/PopupContext';
 
@@ -14,7 +15,9 @@ createRoot(document.getElementById('root')).render(
     <PopupProvider>
       <LoadingPovider>
         <CurrentUserProvider>
-          <App />
+          <CardsProvider>
+            <App />
+          </CardsProvider>
         </CurrentUserProvider>
       </LoadingPovider>
     </PopupProvider>

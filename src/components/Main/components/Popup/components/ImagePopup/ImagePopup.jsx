@@ -1,5 +1,3 @@
-import closeIcon from '../../../../../../assets/images/viewer/viewer_close_Icon.svg';
-
 function ImagePopup({ currentCard }) {
   return (
     <>
