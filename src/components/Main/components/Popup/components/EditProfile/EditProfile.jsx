@@ -1,11 +1,13 @@
 import { useContext, useRef, useState } from 'react';
 
-import CurrentUserContext from '../../../../../../contexts/CurrentUserContext';
-import LoadingContext from '../../../../../../contexts/LoadingContext';
+import { CurrentUserContext } from '../../../../../../contexts/CurrentUserContext';
+import { LoadingContext } from '../../../../../../contexts/LoadingContext';
+import { PopupContext } from '../../../../../../contexts/PopupContext';
 
 function EditProfile() {
-  const isSaving = useContext(LoadingContext);
   const { currentUser, handleUpdateUser } = useContext(CurrentUserContext);
+  const { handleClosePopup } = useContext(PopupContext);
+  const { isLoading, setIsLoading } = useContext(LoadingContext);
 
   const nameRef = useRef();
   const aboutRef = useRef();
@@ -33,6 +35,7 @@ function EditProfile() {
       nameMsg: nameRef.current.validationMessage,
     });
   };
+
   const handleAboutChange = (evt) => {
     setUser({ ...user, about: evt.target.value });
     setIsValid({ ...isValid, validAbout: aboutRef.current.validity.valid });
@@ -45,9 +48,12 @@ function EditProfile() {
     });
   };
 
-  function handleSubimit(evt) {
+  async function handleSubimit(evt) {
     evt.preventDefault();
-    handleUpdateUser(user);
+    setIsLoading(true);
+    await handleUpdateUser(user);
+    setIsLoading(false);
+    handleClosePopup();
   }
 
   return (
@@ -98,12 +104,12 @@ function EditProfile() {
       </fieldset>
       <button
         type='submit'
-        disabled={isSaving}
+        disabled={isLoading}
         className={`form__submit-button
           ${isActive ? `` : `form__submit-button-inactive`}
-          ${isSaving ? 'form__submit-button-inactive' : ''}`}
+          ${isLoading ? 'form__submit-button-inactive' : ''}`}
       >
-        {`${isSaving ? 'Salvando...' : `Salvar`}`}
+        {`${isLoading ? 'Salvando...' : `Salvar`}`}
       </button>
     </form>
   );

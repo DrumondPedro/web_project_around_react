@@ -1,16 +1,17 @@
-import { useEffect, useState } from 'react';
-import deleteButton from '../../../../assets/images/gallery/gallery_card_delete_button.svg';
+import { useContext, useEffect, useState } from 'react';
 
 import ImagePopup from '../Popup/components/ImagePopup/ImagePopup';
 import ConfirmDeletion from '../Popup/components/ConfirmDeletion/ConfirmDeletion';
-function Card({
-  card,
-  userId,
-  onCardDelete,
-  onOpenPopup,
-  onDeslikeClick,
-  onLikeClick,
-}) {
+
+import { PopupContext } from '../../../../contexts/PopupContext';
+import { CurrentUserContext } from '../../../../contexts/CurrentUserContext';
+
+import deleteButton from '../../../../assets/images/gallery/gallery_card_delete_button.svg';
+
+function Card({ card, onCardDelete, onDeslikeClick, onLikeClick }) {
+  const { currentUser } = useContext(CurrentUserContext);
+  const { handleOpenPopup } = useContext(PopupContext);
+
   const [currentCard, setCurrentCard] = useState(card);
 
   const imagePopup = {
@@ -27,7 +28,7 @@ function Card({
   }, [card]);
 
   function handleDelete() {
-    if (currentCard.owner._id === userId) {
+    if (currentCard.owner._id === currentUser._id) {
       onCardDelete(currentCard._id);
     } else {
       console.error('O usuário não é dono desse card');
@@ -35,17 +36,17 @@ function Card({
   }
 
   function handleDeleteButtonClick() {
-    onOpenPopup(ConfirmDeletionPopup);
+    handleOpenPopup(ConfirmDeletionPopup);
   }
 
   function handleCardClick() {
-    onOpenPopup(imagePopup);
+    handleOpenPopup(imagePopup);
   }
 
   function handleLikeButtonClick() {
     if (
       currentCard.likes.find((element) => {
-        return element._id === userId;
+        return element._id === currentUser._id;
       })
     ) {
       onDeslikeClick(currentCard._id, '/cards/likes', (res) => {
@@ -65,7 +66,7 @@ function Card({
         src={deleteButton}
         alt='Ícone de uma lixeira'
         className={`gallery__card-delete-button ${
-          currentCard.owner._id === userId
+          currentCard.owner._id === currentUser._id
             ? `gallery__card-delete-button-visible`
             : ''
         }`}
@@ -84,7 +85,7 @@ function Card({
             aria-label='Like do cartão'
             className={`gallery__card-like-button ${
               currentCard.likes.find((element) => {
-                return element._id === userId;
+                return element._id === currentUser._id;
               })
                 ? 'gallery__card-like-button-active'
                 : ''

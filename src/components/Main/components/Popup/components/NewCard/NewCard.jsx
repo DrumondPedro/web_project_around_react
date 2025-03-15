@@ -1,9 +1,9 @@
 import { useContext, useRef, useState } from 'react';
 
-import LoadingContext from '../../../../../../contexts/LoadingContext';
+import { LoadingContext } from '../../../../../../contexts/LoadingContext';
 
 function NewCard({ onAddPlaceSubmit }) {
-  const isSaving = useContext(LoadingContext);
+  const { isLoading } = useContext(LoadingContext);
 
   const titleRef = useRef();
   const linkRef = useRef();
@@ -92,12 +92,12 @@ function NewCard({ onAddPlaceSubmit }) {
       </fieldset>
       <button
         type='submit'
-        disabled={isSaving}
+        disabled={isLoading}
         className={`form__submit-button 
         ${isActive ? `` : `form__submit-button-inactive`}
-        ${isSaving ? 'form__submit-button-inactive' : ''}`}
+        ${isLoading ? 'form__submit-button-inactive' : ''}`}
       >
-        {`${isSaving ? 'Criando...' : `Criar`}`}
+        {`${isLoading ? 'Criando...' : `Criar`}`}
       </button>
     </form>
   );

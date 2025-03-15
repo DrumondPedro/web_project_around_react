@@ -1,6 +1,12 @@
+import { useContext } from 'react';
+
 import closeIcon from '../../../../assets/images/editor/editor_close_Icon.svg';
 
-function Popup({ children, title, onClose }) {
+import { PopupContext } from '../../../../contexts/PopupContext';
+
+function Popup({ children, title }) {
+  const { handleClosePopup } = useContext(PopupContext);
+
   return (
     <div className={`editor ${!title ? 'viewer' : ''}`}>
       <div className={`editor__content ${!title ? 'viewer__content' : ''}`}>
@@ -8,7 +14,7 @@ function Popup({ children, title, onClose }) {
           className={`editor__close-button ${
             !title ? 'viewer__close-button ' : ''
           }`}
-          onClick={onClose}
+          onClick={handleClosePopup}
         >
           <img
             src={closeIcon}

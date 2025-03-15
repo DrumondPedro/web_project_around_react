@@ -9,13 +9,10 @@ import EditProfile from './components/Popup/components/EditProfile/EditProfile';
 import NewCard from './components/Popup/components/NewCard/NewCard';
 import Card from './components/Card/Card';
 
-import CurrentUserContext from '../../contexts/CurrentUserContext';
+import { CurrentUserContext } from '../../contexts/CurrentUserContext';
+import { PopupContext } from '../../contexts/PopupContext';
 
 function Main({
-  popup,
-  onOpenPopup,
-  onClosePopup,
-  onUpdateAvatar,
   cards,
   onAddPlaceSubmit,
   onCardDelete,
@@ -23,10 +20,11 @@ function Main({
   onCardDislike,
 }) {
   const { currentUser } = useContext(CurrentUserContext);
+  const { popup, handleOpenPopup } = useContext(PopupContext);
 
   const editAvatarPopup = {
     title: 'Alterar a foto do perfil',
-    children: <EditAvatar onUpdateAvatar={onUpdateAvatar} />,
+    children: <EditAvatar />,
   };
 
   const editProfilePopup = {
@@ -45,7 +43,7 @@ function Main({
         <button
           className='profile__picture-edit-button '
           onClick={() => {
-            onOpenPopup(editAvatarPopup);
+            handleOpenPopup(editAvatarPopup);
           }}
         ></button>
         <img
@@ -59,7 +57,7 @@ function Main({
             <button
               className='profile__edit-button'
               onClick={() => {
-                onOpenPopup(editProfilePopup);
+                handleOpenPopup(editProfilePopup);
               }}
             >
               <img
@@ -74,7 +72,7 @@ function Main({
         <button
           className='profile__add-button'
           onClick={() => {
-            onOpenPopup(newCardPopup);
+            handleOpenPopup(newCardPopup);
           }}
         >
           <img
@@ -90,20 +88,14 @@ function Main({
             <Card
               key={i}
               card={card}
-              userId={currentUser._id}
               onCardDelete={onCardDelete}
-              onOpenPopup={onOpenPopup}
               onDeslikeClick={onCardDislike}
               onLikeClick={onCardLike}
             ></Card>
           ))}
         </ul>
       </section>
-      {popup && (
-        <Popup title={popup.title} onClose={onClosePopup}>
-          {popup.children}
-        </Popup>
-      )}
+      {popup && <Popup title={popup.title}>{popup.children}</Popup>}
     </main>
   );
 }

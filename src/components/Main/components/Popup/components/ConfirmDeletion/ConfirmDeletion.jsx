@@ -1,19 +1,20 @@
 import { useContext } from 'react';
-import LoadingContext from '../../../../../../contexts/LoadingContext';
+
+import { LoadingContext } from '../../../../../../contexts/LoadingContext';
 
 function ConfirmDeletion({ onConfirm }) {
-  const isExcluding = useContext(LoadingContext);
+  const { isLoading } = useContext(LoadingContext);
 
   return (
     <button
       type='submit'
       className={`form__submit-button ${
-        isExcluding ? 'form__submit-button-inactive' : ''
+        isLoading ? 'form__submit-button-inactive' : ''
       }`}
       onClick={onConfirm}
-      disabled={isExcluding}
+      disabled={isLoading}
     >
-      {`${isExcluding ? 'Excluindo...' : `Sim`}`}
+      {`${isLoading ? 'Excluindo...' : `Sim`}`}
     </button>
   );
 }

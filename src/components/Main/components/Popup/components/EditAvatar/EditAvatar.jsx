@@ -1,25 +1,35 @@
 import { useContext, useRef, useState } from 'react';
 
-import LoadingContext from '../../../../../../contexts/LoadingContext';
+import { CurrentUserContext } from '../../../../../../contexts/CurrentUserContext';
+import { LoadingContext } from '../../../../../../contexts/LoadingContext';
+import { PopupContext } from '../../../../../../contexts/PopupContext';
 
-function EditAvatar({ onUpdateAvatar }) {
-  const isSaving = useContext(LoadingContext);
+function EditAvatar() {
+  const { handleUpdateAvatar } = useContext(CurrentUserContext);
+  const { handleClosePopup } = useContext(PopupContext);
+  const { isLoading, setIsLoading } = useContext(LoadingContext);
 
   const picture = useRef();
+
+  const [avatar, setAvatar] = useState('');
 
   const [isValid, setIsValid] = useState(true);
   const [isActive, setIsActive] = useState(false);
   const [avatarLinkErrorMessage, setAvatarLinkErrorMessage] = useState('');
 
-  const handleValidation = () => {
+  const handleValidation = (evt) => {
+    setAvatar(evt.target.value);
     setIsValid(picture.current.validity.valid);
     setIsActive(picture.current.validity.valid);
     setAvatarLinkErrorMessage(picture.current.validationMessage);
   };
 
-  function handleSubimit(evt) {
+  async function handleSubimit(evt) {
     evt.preventDefault();
-    onUpdateAvatar(picture.current.value);
+    setIsLoading(true);
+    await handleUpdateAvatar(picture.current.value);
+    setIsLoading(false);
+    handleClosePopup();
   }
   return (
     <form onSubmit={handleSubimit} className={`form editor__form`} noValidate>
@@ -33,6 +43,8 @@ function EditAvatar({ onUpdateAvatar }) {
             id='picture'
             placeholder='Link da foto'
             required
+            minLength='2'
+            value={avatar}
             ref={picture}
             onChange={handleValidation}
           />
@@ -47,12 +59,12 @@ function EditAvatar({ onUpdateAvatar }) {
       </fieldset>
       <button
         type='submit'
-        disabled={isSaving}
+        disabled={isLoading}
         className={`form__submit-button 
           ${isActive ? `` : `form__submit-button-inactive`}
-          ${isSaving ? 'form__submit-button-inactive' : ''}`}
+          ${isLoading ? 'form__submit-button-inactive' : ''}`}
       >
-        {`${isSaving ? 'Salvando...' : 'Salvar'}`}
+        {`${isLoading ? 'Salvando...' : 'Salvar'}`}
       </button>
     </form>
   );
