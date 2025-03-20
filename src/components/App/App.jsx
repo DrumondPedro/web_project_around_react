@@ -1,7 +1,8 @@
-import { useContext, useEffect, useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
 
 import Header from '../Header/Header';
 import Main from '../Main/Main';
+import Signin from '../Signin/Signin';
 import Footer from '../Footer/Footer';
 
 function App() {
@@ -10,7 +11,10 @@ function App() {
       <div className='body'>
         <div className='page'>
           <Header />
-          <Main />
+          <Routes>
+            <Route path='/' element={<Main />} />
+            <Route path='/signin' element={<Signin />} />
+          </Routes>
           <Footer />
         </div>
       </div>
