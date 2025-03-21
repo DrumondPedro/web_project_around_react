@@ -24,6 +24,10 @@
   line-height: 100%;
 }
 
+.form__signin-error {
+  top: 31px;
+}
+
 .form__signin-submit-button {
   background-color: rgba(255, 255, 255, 1);
   color: #000;
