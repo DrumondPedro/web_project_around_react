@@ -99,7 +99,7 @@ function NewCard() {
       </fieldset>
       <button
         type='submit'
-        disabled={isLoading}
+        disabled={isLoading || !isActive}
         className={`form__submit-button 
         ${isActive ? `` : `form__submit-button-inactive`}
         ${isLoading ? 'form__submit-button-inactive' : ''}`}
