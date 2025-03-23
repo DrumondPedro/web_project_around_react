@@ -5,6 +5,7 @@ import Main from '../Main/Main';
 import Signin from '../Signin/Signin';
 import Signup from '../Signup/Signup';
 import Footer from '../Footer/Footer';
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 
 function App() {
   return (
@@ -13,9 +14,30 @@ function App() {
         <div className='page'>
           <Header />
           <Routes>
-            <Route path='/' element={<Main />} />
-            <Route path='/signup' element={<Signup />} />
-            <Route path='/signin' element={<Signin />} />
+            <Route
+              path='/'
+              element={
+                <ProtectedRoute>
+                  <Main />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/signup'
+              element={
+                <ProtectedRoute publicRoute>
+                  <Signup />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/signin'
+              element={
+                <ProtectedRoute publicRoute>
+                  <Signin />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
           <Footer />
         </div>
