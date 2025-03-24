@@ -38,11 +38,19 @@
   color: #000;
 }
 
+.form__signin-submit-button-inactive {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
 .signin__text {
   line-height: 100%;
   font-size: 14px;
   color: #fff;
   text-align: center;
+}
+
+.signin__link {
+  color: #fff;
 }
 
 @media screen and (max-width: 375px) {

@@ -8,21 +8,24 @@ import { CurrentUserProvider } from './contexts/CurrentUserContext';
 import { CardsProvider } from './contexts/CardsContext';
 import { LoadingPovider } from './contexts/LoadingContext';
 import { PopupProvider } from './contexts/PopupContext';
+import { LoginProvider } from './contexts/LoginContext';
 
 import './index.css';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <PopupProvider>
-        <LoadingPovider>
-          <CurrentUserProvider>
-            <CardsProvider>
-              <App />
-            </CardsProvider>
-          </CurrentUserProvider>
-        </LoadingPovider>
-      </PopupProvider>
+      <LoginProvider>
+        <PopupProvider>
+          <LoadingPovider>
+            <CurrentUserProvider>
+              <CardsProvider>
+                <App />
+              </CardsProvider>
+            </CurrentUserProvider>
+          </LoadingPovider>
+        </PopupProvider>
+      </LoginProvider>
     </BrowserRouter>
   </StrictMode>
 );

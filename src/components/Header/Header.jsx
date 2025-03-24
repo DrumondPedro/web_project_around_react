@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import useWindowDimension from 'use-window-dimensions';
+
+import { LoginContext } from '../../contexts/LoginContext';
 
 import logo from '../../assets/images/header/logo.svg';
 import closeIcon from '../../assets/images/header/header__menu_button_close.svg';
@@ -9,21 +11,36 @@ import gridIcon from '../../assets/images/header/header__menu_button_grid.svg';
 
 function Header() {
   const location = useLocation();
-
   const { width } = useWindowDimension();
 
-  const [islogged, setIslogged] = useState(false);
+  const navigate = useNavigate();
+
+  const { isLoggedIn, setIsloggedIn } = useContext(LoginContext);
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleOpeningMenuMobile = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const handleLogout = () => {
+    setIsloggedIn(false);
+    navigate('/login');
+  };
+
   const handleButtonSelectionNotLogged = () => {
     if (location.pathname === '/signin') {
-      return <button className='header__button'>Inscrever-se</button>;
+      return (
+        <button className='header__button' onClick={() => navigate('/signup')}>
+          Inscrever-se
+        </button>
+      );
     }
-    return <button className='header__button'>Entrar</button>;
+    return (
+      <button className='header__button' onClick={() => navigate('/signin')}>
+        Entrar
+      </button>
+    );
   };
 
   const handleButtonSelectionLogged = () => {
@@ -45,7 +62,9 @@ function Header() {
     return (
       <>
         <p className='header__email'>'emailtest@mail.com'</p>
-        <button className='header__button'>Sair</button>
+        <button className='header__button' onClick={handleLogout}>
+          Sair
+        </button>
       </>
     );
   };
@@ -61,7 +80,9 @@ function Header() {
       {isMenuOpen && (
         <div className='header__mobile-menu'>
           <p className='header__email'>'emailtest@mail.com'</p>
-          <button className='header__button'>Sair</button>
+          <button className='header__button' onClick={handleLogout}>
+            Sair
+          </button>
         </div>
       )}
       <div className='header__content'>
@@ -71,7 +92,7 @@ function Header() {
           className='header__logo'
         />
         <div className='header__menu'>
-          {islogged
+          {isLoggedIn
             ? handleButtonSelectionLogged()
             : handleButtonSelectionNotLogged()}
         </div>

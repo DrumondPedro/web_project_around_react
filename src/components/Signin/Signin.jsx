@@ -1,8 +1,12 @@
 import { useContext, useRef, useState } from 'react';
 
+import { Link } from 'react-router-dom';
+
+import { LoginContext } from '../../contexts/LoginContext';
 import { LoadingContext } from '../../contexts/LoadingContext';
 
 function Signin() {
+  const { handleLogin } = useContext(LoginContext);
   const { isLoading, setIsLoading } = useContext(LoadingContext);
 
   const emailRef = useRef();
@@ -52,6 +56,9 @@ function Signin() {
 
   async function handleSubimit(evt) {
     evt.preventDefault();
+    setIsLoading(true);
+    await handleLogin(signinData);
+    setIsLoading(false);
   }
 
   return (
@@ -102,15 +109,20 @@ function Signin() {
         <button
           type='submit'
           disabled={isLoading || !isActive}
-          className={`form__submit-button form__signin-submit-button
-            ${isActive ? `` : `form__submit-button-inactive`}
-            ${isLoading ? `form__submit-button-inactive` : ``}
+          className={`form__submit-button form__signin-submit-button 
+            ${isActive ? `` : `form__signin-submit-button-inactive`}
+            ${isLoading ? `form__signin-submit-button-inactive` : ``}
             `}
         >
           Entrar
         </button>
       </form>
-      <p className='signin__text'>Ainda não é membro? Inscreva-se aqui!</p>
+      <p className='signin__text'>
+        Ainda não é membro?{' '}
+        <Link className='signin__link' to={'/signup'}>
+          Inscreva-se aqui!
+        </Link>
+      </p>
     </section>
   );
 }

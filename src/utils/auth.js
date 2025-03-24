@@ -19,14 +19,14 @@ class Auth {
     });
   }
 
-  register(path, { userEmail, userPassword }) {
+  register(path, { email: userEmail, password: userPassword }) {
     return this._makeRequest(path, 'POST', {
       password: `${userPassword}`,
       email: `${userEmail}`,
     });
   }
 
-  authorize(path, { userEmail, userPassword }) {
+  authorize(path, { email: userEmail, password: userPassword }) {
     return this._makeRequest(path, 'POST', {
       password: `${userPassword}`,
       email: `${userEmail}`,

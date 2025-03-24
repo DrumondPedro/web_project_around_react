@@ -1,8 +1,12 @@
 import { useContext, useRef, useState } from 'react';
 
+import { Link } from 'react-router-dom';
+
+import { LoginContext } from '../../contexts/LoginContext';
 import { LoadingContext } from '../../contexts/LoadingContext';
 
 function Signup() {
+  const { handleRegister } = useContext(LoginContext);
   const { isLoading, setIsLoading } = useContext(LoadingContext);
 
   const emailRef = useRef();
@@ -52,6 +56,9 @@ function Signup() {
 
   async function handleSubimit(evt) {
     evt.preventDefault();
+    setIsLoading(true);
+    await handleRegister(signupData);
+    setIsLoading(false);
   }
 
   return (
@@ -103,14 +110,19 @@ function Signup() {
           type='submit'
           disabled={isLoading || !isActive}
           className={`form__submit-button form__signup-submit-button
-            ${isActive ? `` : `form__submit-button-inactive`}
-            ${isLoading ? `form__submit-button-inactive` : ``}
+            ${isActive ? `` : `form__signup-submit-button-inactive`}
+            ${isLoading ? `form__signup-submit-button-inactive` : ``}
             `}
         >
           Inscrever-se
         </button>
       </form>
-      <p className='signup__text'>Já é um membro? Faça o login aqui!</p>
+      <p className='signup__text'>
+        Já é um membro?{' '}
+        <Link className='signup__link' to={'/signin'}>
+          Faça o login aqui!
+        </Link>
+      </p>
     </section>
   );
 }
