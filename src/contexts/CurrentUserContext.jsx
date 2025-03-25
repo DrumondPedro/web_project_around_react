@@ -15,6 +15,37 @@ export function CurrentUserProvider({ children }) {
     cohort: '...',
   });
 
+  const [userEmail, setUserEmail] = useState({
+    data: {
+      _id: '000',
+      email: '...',
+    },
+  });
+
+  const handleUserInfo = async () => {
+    try {
+      const userData = await client.getUserInfo('/users/me');
+      setCurrentUser(userData);
+    } catch (error) {
+      console.log(err);
+      console.log('Erro no GET /users/me');
+    }
+  };
+
+  const handleUserEmail = async (token) => {
+    try {
+      const userEmailData = await client.getUserEmail(
+        '/users/me',
+        token,
+        'https://se-register-api.en.tripleten-services.com/v1'
+      );
+      setUserEmail(userEmailData);
+    } catch (error) {
+      console.log(error);
+      console.log('Erro no GET /users/me');
+    }
+  };
+
   const handleUpdateUser = async (userData) => {
     try {
       const userUpdated = await client.updateUserInfo(userData, '/users/me');
@@ -36,21 +67,16 @@ export function CurrentUserProvider({ children }) {
     }
   };
 
-  useEffect(() => {
-    client
-      .getUserInfo('/users/me')
-      .then((data) => {
-        setCurrentUser(data);
-      })
-      .catch((err) => {
-        console.log(err);
-        console.log('Erro no GET /users/me');
-      });
-  }, []);
-
   return (
     <CurrentUserContext.Provider
-      value={{ currentUser, handleUpdateUser, handleUpdateAvatar }}
+      value={{
+        currentUser,
+        userEmail,
+        handleUserInfo,
+        handleUserEmail,
+        handleUpdateUser,
+        handleUpdateAvatar,
+      }}
     >
       {children}
     </CurrentUserContext.Provider>

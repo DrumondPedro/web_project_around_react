@@ -3,7 +3,9 @@ import { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useWindowDimension from 'use-window-dimensions';
 
+import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import { LoginContext } from '../../contexts/LoginContext';
+import { LocalDataContext } from '../../contexts/LocalDataContext';
 
 import logo from '../../assets/images/header/logo.svg';
 import closeIcon from '../../assets/images/header/header__menu_button_close.svg';
@@ -15,7 +17,9 @@ function Header() {
 
   const navigate = useNavigate();
 
+  const { userEmail } = useContext(CurrentUserContext);
   const { isLoggedIn, setIsloggedIn } = useContext(LoginContext);
+  const { TokenInfo } = useContext(LocalDataContext);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -25,6 +29,7 @@ function Header() {
 
   const handleLogout = () => {
     setIsloggedIn(false);
+    TokenInfo.remove();
     navigate('/login');
   };
 
@@ -61,7 +66,7 @@ function Header() {
 
     return (
       <>
-        <p className='header__email'>'emailtest@mail.com'</p>
+        <p className='header__email'>{userEmail.data.email}</p>
         <button className='header__button' onClick={handleLogout}>
           Sair
         </button>
@@ -79,7 +84,7 @@ function Header() {
     <header className='header'>
       {isMenuOpen && (
         <div className='header__mobile-menu'>
-          <p className='header__email'>'emailtest@mail.com'</p>
+          <p className='header__email'>{userEmail.data.email}</p>
           <button className='header__button' onClick={handleLogout}>
             Sair
           </button>

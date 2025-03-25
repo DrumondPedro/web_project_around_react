@@ -2,10 +2,14 @@ import { useContext, useRef, useState } from 'react';
 
 import { Link } from 'react-router-dom';
 
+import { CurrentUserContext } from '../../contexts/CurrentUserContext';
+import { LocalDataContext } from '../../contexts/LocalDataContext';
 import { LoginContext } from '../../contexts/LoginContext';
 import { LoadingContext } from '../../contexts/LoadingContext';
 
 function Signin() {
+  const { handleUserInfo, handleUserEmail } = useContext(CurrentUserContext);
+  const { TokenInfo } = useContext(LocalDataContext);
   const { handleLogin } = useContext(LoginContext);
   const { isLoading, setIsLoading } = useContext(LoadingContext);
 
@@ -55,9 +59,16 @@ function Signin() {
   };
 
   async function handleSubimit(evt) {
+    if (!signinData.email || !signinData.password) {
+      return;
+    }
+
     evt.preventDefault();
     setIsLoading(true);
-    await handleLogin(signinData);
+    const { token } = await handleLogin(signinData);
+    TokenInfo.set(token);
+    handleUserInfo();
+    handleUserEmail(token);
     setIsLoading(false);
   }
 

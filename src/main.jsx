@@ -9,23 +9,26 @@ import { CardsProvider } from './contexts/CardsContext';
 import { LoadingPovider } from './contexts/LoadingContext';
 import { PopupProvider } from './contexts/PopupContext';
 import { LoginProvider } from './contexts/LoginContext';
+import { LocalDataPovider } from './contexts/LocalDataContext';
 
 import './index.css';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <LoginProvider>
-        <PopupProvider>
-          <LoadingPovider>
-            <CurrentUserProvider>
-              <CardsProvider>
-                <App />
-              </CardsProvider>
-            </CurrentUserProvider>
-          </LoadingPovider>
-        </PopupProvider>
-      </LoginProvider>
+      <LocalDataPovider>
+        <LoginProvider>
+          <PopupProvider>
+            <LoadingPovider>
+              <CurrentUserProvider>
+                <CardsProvider>
+                  <App />
+                </CardsProvider>
+              </CurrentUserProvider>
+            </LoadingPovider>
+          </PopupProvider>
+        </LoginProvider>
+      </LocalDataPovider>
     </BrowserRouter>
   </StrictMode>
 );

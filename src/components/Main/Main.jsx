@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 
 import pencil from '../../assets/images/profile/profile_edit_button.svg';
 import plus from '../../assets/images/profile/profile_add_button.svg';
