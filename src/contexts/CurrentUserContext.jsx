@@ -1,6 +1,6 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useState } from 'react';
 
-import client from '../utils/api';
+import { client, clientEmail } from '../utils/api';
 
 import loadingPhoto from '../assets/images/profile/profile_loading_photo.png';
 
@@ -27,43 +27,37 @@ export function CurrentUserProvider({ children }) {
       const userData = await client.getUserInfo('/users/me');
       setCurrentUser(userData);
     } catch (error) {
-      console.log(err);
-      console.log('Erro no GET /users/me');
+      console.log('GET - /users/me', error);
     }
   };
 
   const handleUserEmail = async (token) => {
     try {
-      const userEmailData = await client.getUserEmail(
-        '/users/me',
-        token,
-        'https://se-register-api.en.tripleten-services.com/v1'
-      );
+      const userEmailData = await clientEmail.getUserEmail('/users/me', token);
       setUserEmail(userEmailData);
     } catch (error) {
-      console.log(error);
-      console.log('Erro no GET /users/me');
+      console.log('GET - /users/me', error);
     }
   };
 
   const handleUpdateUser = async (userData) => {
     try {
-      const userUpdated = await client.updateUserInfo(userData, '/users/me');
+      const userUpdated = await client.updateUserInfo('/users/me', userData);
       setCurrentUser(userUpdated);
-    } catch (err) {
-      console.log(`${err} - Erro no PACH /users/me`);
+    } catch (error) {
+      console.log(`PATCH - /users/me -`, error);
     }
   };
 
   const handleUpdateAvatar = async (picture) => {
     try {
       const avatarUpdated = await client.updateUserAvatar(
-        picture,
-        '/users/me/avatar'
+        '/users/me/avatar',
+        picture
       );
       setCurrentUser(avatarUpdated);
-    } catch (err) {
-      console.log(`${err} - Erro no PATCH /users/me/avatar`);
+    } catch (error) {
+      console.log(`PATCH - /users/me/avatar -`, error);
     }
   };
 

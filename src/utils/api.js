@@ -4,65 +4,197 @@ class Api {
     this._userAuthorization = userAuthorization;
   }
 
-  _makeRequest(path, method = 'GET', body = null) {
-    const options = {
-      method,
-      headers: { ...this.headers, authorization: this._userAuthorization },
-    };
+  async getInitialCards(path) {
+    try {
+      const res = await fetch(`${this._baseURL}${path}`, {
+        method: 'GET',
+        headers: {
+          authorization: this._userAuthorization,
+        },
+      });
 
-    if (body) {
-      options.headers['Content-Type'] = 'application/json';
-      options.body = JSON.stringify(body);
-    }
-
-    return fetch(`${this._baseURL}${path}`, options).then((res) => {
-      if (res.ok) {
-        return res.json();
+      if (res.status !== 200) {
+        throw new Error(`${res.status} - ${res.type}`);
       }
-      return Promise.reject(`Error: ${res.status}`);
-    });
+
+      return res.json();
+    } catch (error) {
+      throw error;
+    }
   }
 
-  getInitialCards(path) {
-    return this._makeRequest(path);
+  async addNewCard({ title: cardName, link: cardLink }, path) {
+    try {
+      const res = await fetch(`${this._baseURL}${path}`, {
+        method: 'POST',
+        headers: {
+          authorization: this._userAuthorization,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: `${cardName}`,
+          link: `${cardLink}`,
+        }),
+      });
+
+      if (res.status !== 201) {
+        throw new Error(`${res.status} - ${res.type}`);
+      }
+
+      return res.json();
+    } catch (error) {
+      throw error;
+    }
   }
 
-  addNewCard({ title: cardName, link: cardLink }, path) {
-    return this._makeRequest(path, 'POST', {
-      name: `${cardName}`,
-      link: `${cardLink}`,
-    });
+  async like(path) {
+    try {
+      const res = await fetch(`${this._baseURL}${path}`, {
+        method: 'PUT',
+        headers: {
+          authorization: this._userAuthorization,
+        },
+      });
+
+      if (res.status !== 200) {
+        throw new Error(`${res.status} - ${res.type}`);
+      }
+
+      return res.json();
+    } catch (error) {
+      throw error;
+    }
   }
 
-  deleteCard(cardId, path) {
-    return this._makeRequest(`${path}/${cardId}`, 'DELETE');
+  async dislike(path) {
+    try {
+      const res = await fetch(`${this._baseURL}${path}`, {
+        method: 'DELETE',
+        headers: {
+          authorization: this._userAuthorization,
+        },
+      });
+
+      if (res.status !== 200) {
+        throw new Error(`${res.status} - ${res.type}`);
+      }
+
+      return res.json();
+    } catch (error) {
+      throw error;
+    }
+    r;
   }
 
-  getUserInfo(path) {
-    return this._makeRequest(path);
+  async deleteCard(path) {
+    try {
+      const res = await fetch(`${this._baseURL}${path}`, {
+        method: 'DELETE',
+        headers: {
+          authorization: this._userAuthorization,
+        },
+      });
+
+      if (res.status !== 200) {
+        throw new Error(`${res.status} - ${res.type}`);
+      }
+
+      return res.json();
+    } catch (error) {
+      throw error;
+    }
   }
 
-  updateUserInfo({ name: userName, about: userAbout }, path) {
-    return this._makeRequest(path, 'PATCH', {
-      name: `${userName}`,
-      about: `${userAbout}`,
-    });
+  async getUserInfo(path) {
+    try {
+      const res = await fetch(`${this._baseURL}${path}`, {
+        method: 'GET',
+        headers: {
+          authorization: this._userAuthorization,
+        },
+      });
+
+      if (res.status !== 200) {
+        throw new Error(`${res.status} - ${res.type}`);
+      }
+
+      return res.json();
+    } catch (error) {
+      throw error;
+    }
   }
 
-  updateUserAvatar(picture, path) {
-    return this._makeRequest(path, 'PATCH', { avatar: `${picture}` });
+  async getUserEmail(path, token) {
+    try {
+      const res = await fetch(`${this._baseURL}${path}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.status !== 200) {
+        throw new Error(`${res.status} - ${res.type}`);
+      }
+
+      return res.json();
+    } catch (error) {
+      throw error;
+    }
   }
 
-  like(cardId, path) {
-    return this._makeRequest(`${path}/${cardId}`, 'PUT');
+  async updateUserInfo(path, { name: userName, about: userAbout }) {
+    try {
+      const res = await fetch(`${this._baseURL}${path}`, {
+        method: 'PATCH',
+        headers: {
+          authorization: this._userAuthorization,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: `${userName}`,
+          about: `${userAbout}`,
+        }),
+      });
+
+      if (res.status !== 200) {
+        throw new Error(`${res.status} - ${res.type}`);
+      }
+
+      return res.json();
+    } catch (error) {
+      throw error;
+    }
   }
 
-  dislike(cardId, path) {
-    return this._makeRequest(`${path}/${cardId}`, 'DELETE');
+  async updateUserAvatar(path, picture) {
+    try {
+      const res = await fetch(`${this._baseURL}${path}`, {
+        method: 'PATCH',
+        headers: {
+          authorization: this._userAuthorization,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ avatar: `${picture}` }),
+      });
+
+      if (res.status !== 200) {
+        throw new Error(`${res.status} - ${res.type}`);
+      }
+
+      return res.json();
+    } catch (error) {
+      throw error;
+    }
   }
 }
 
-export default new Api({
-  baseURL: 'https://around.nomoreparties.co/v1/web-ptbr-cohort-11',
-  userAuthorization: '3fda8d28-174d-4647-9b4c-9acb9effd1bc',
+export const client = new Api({
+  baseURL: 'https://around-api.pt-br.tripleten-services.com/v1/',
+  userAuthorization: '340a3ec0-6497-41ea-985c-06f3bdaa364c',
+});
+
+export const clientEmail = new Api({
+  baseURL: 'https://se-register-api.en.tripleten-services.com/v1',
+  userAuthorization: '340a3ec0-6497-41ea-985c-06f3bdaa364c',
 });

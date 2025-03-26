@@ -33,7 +33,7 @@ function Card({ card }) {
   }, [card]);
 
   async function handleDelete() {
-    if (currentCard.owner._id === currentUser._id) {
+    if (currentCard.owner === currentUser._id) {
       setIsLoading(true);
       await handleCardDelete(currentCard._id);
       setIsLoading(false);
@@ -51,17 +51,13 @@ function Card({ card }) {
     handleOpenPopup(imagePopup);
   }
 
-  function handleLikeButtonClick() {
-    if (
-      currentCard.likes.find((element) => {
-        return element._id === currentUser._id;
-      })
-    ) {
-      handleCardDisike(currentCard._id, '/cards/likes', (res) => {
+  async function handleLikeButtonClick() {
+    if (currentCard.isLiked) {
+      await handleCardDisike(currentCard._id, (res) => {
         setCurrentCard(res);
       });
     } else {
-      handleCardLike(currentCard._id, '/cards/likes', (res) => {
+      await awaithandleCardLike(currentCard._id, (res) => {
         setCurrentCard(res);
       });
     }
@@ -74,7 +70,7 @@ function Card({ card }) {
         src={deleteButton}
         alt='Ícone de uma lixeira'
         className={`gallery__card-delete-button ${
-          currentCard.owner._id === currentUser._id
+          currentCard.owner === currentUser._id
             ? `gallery__card-delete-button-visible`
             : ''
         }`}
@@ -91,16 +87,11 @@ function Card({ card }) {
           <button
             onClick={handleLikeButtonClick}
             aria-label='Like do cartão'
-            className={`gallery__card-like-button ${
-              currentCard.likes.find((element) => {
-                return element._id === currentUser._id;
-              })
-                ? 'gallery__card-like-button-active'
-                : ''
-            }`}
+            className={`gallery__card-like-button 
+              ${currentCard.isLiked ? 'gallery__card-like-button-active' : ''}`}
           ></button>
           <p className='gallery__card-like-counter'>
-            {currentCard.likes.length ? currentCard.likes.length : '0'}
+            {currentCard.isLiked ? '1' : '0'}
           </p>
         </div>
       </div>

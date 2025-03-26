@@ -1,7 +1,8 @@
 import { useContext } from 'react';
 
-import pencil from '../../assets/images/profile/profile_edit_button.svg';
-import plus from '../../assets/images/profile/profile_add_button.svg';
+import { CurrentUserContext } from '../../contexts/CurrentUserContext';
+import { CardsContext } from '../../contexts/CardsContext';
+import { PopupContext } from '../../contexts/PopupContext';
 
 import Popup from './components/Popup/Popup';
 import EditAvatar from './components/Popup/components/EditAvatar/EditAvatar';
@@ -9,9 +10,8 @@ import EditProfile from './components/Popup/components/EditProfile/EditProfile';
 import NewCard from './components/Popup/components/NewCard/NewCard';
 import Card from './components/Card/Card';
 
-import { CurrentUserContext } from '../../contexts/CurrentUserContext';
-import { CardsContext } from '../../contexts/CardsContext';
-import { PopupContext } from '../../contexts/PopupContext';
+import pencil from '../../assets/images/profile/profile_edit_button.svg';
+import plus from '../../assets/images/profile/profile_add_button.svg';
 
 function Main({}) {
   const { currentUser } = useContext(CurrentUserContext);

@@ -18,6 +18,12 @@ function App() {
   const { TokenInfo } = useContext(LocalDataContext);
   const { setIsloggedIn } = useContext(LoginContext);
 
+  async function handleAutomaticLogin(token) {
+    await handleUserInfo();
+    await handleUserEmail(token);
+    setIsloggedIn(true);
+  }
+
   useEffect(() => {
     const token = TokenInfo.get();
 
@@ -25,9 +31,7 @@ function App() {
       return;
     }
 
-    handleUserInfo();
-    handleUserEmail(token);
-    setIsloggedIn(true);
+    handleAutomaticLogin(token);
   }, []);
 
   return (

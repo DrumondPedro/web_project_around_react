@@ -1,59 +1,60 @@
 import { createContext, useEffect, useState } from 'react';
 
-import client from '../utils/api';
+import { client } from '../utils/api';
 
 export const CardsContext = createContext();
 
 export function CardsProvider({ children }) {
   const [cards, setCards] = useState([]);
 
+  async function handleInitialCards() {
+    try {
+      const data = await client.getInitialCards('/cards');
+      setCards(data);
+    } catch (error) {
+      console.log('GET - /cards -', error);
+      setCards([]);
+    }
+  }
+
   async function handleCardCreation(newCardData) {
     try {
       const newCard = await client.addNewCard(newCardData, '/cards');
       setCards([newCard, ...cards]);
+    } catch (error) {
+      console.log('POST - /cards -', error);
+    }
+  }
+
+  async function handleCardLike(id, executor) {
+    try {
+      const cardLiked = await client.like(`/cards/${id}/likes`);
+      executor(cardLiked);
+    } catch (error) {
+      console.log(`PUT - /cards/${id}/likes -`, error);
+    }
+  }
+
+  async function handleCardDisike(id, executor) {
+    try {
+      const cardDesliked = await client.dislike(`/cards/${id}/likes`);
+      executor(cardDesliked);
     } catch (err) {
-      console.log(`${err} - Erro no POST /cards`);
+      console.log(`DELETE - /cards/${id}/likes -`, error);
     }
   }
 
   async function handleCardDelete(selectedCardId) {
     try {
-      await client.deleteCard(selectedCardId, '/cards');
+      await client.deleteCard(`/cards/${selectedCardId}`);
       setCards(cards.filter((card) => card._id !== selectedCardId));
     } catch (err) {
-      console.log(`${err} - Erro no DELETE /cards`);
-    }
-  }
-
-  async function handleCardLike(id, path, executor) {
-    try {
-      const cardLiked = await client.like(id, path);
-      executor(cardLiked);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  async function handleCardDisike(id, path, executor) {
-    try {
-      const cardDesliked = await client.dislike(id, path);
-      executor(cardDesliked);
-    } catch (err) {
-      console.log(err);
+      console.log(`DELETE - /cards/${selectedCardId} -`, error);
     }
   }
 
   useEffect(() => {
-    client
-      .getInitialCards('/cards')
-      .then((data) => {
-        setCards(data);
-      })
-      .catch((err) => {
-        console.log(err);
-        console.log('Erro no GET /cards');
-        setCards([]);
-      });
+    handleInitialCards();
   }, []);
 
   return (
@@ -61,9 +62,9 @@ export function CardsProvider({ children }) {
       value={{
         cards,
         handleCardCreation,
-        handleCardDelete,
         handleCardLike,
         handleCardDisike,
+        handleCardDelete,
       }}
     >
       {children}
