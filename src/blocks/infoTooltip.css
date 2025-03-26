@@ -1,0 +1,33 @@
+.infoTooltip {
+  margin: 26px 0 24px;
+  text-align: center;
+}
+
+.infoTooltip__image {
+  width: 120px;
+  height: 120px;
+}
+
+.infoTooltip__text {
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 100%;
+  text-align: center;
+  margin-top: 32px;
+}
+
+@media screen and (max-width: 635px) {
+  .infoTooltip__text {
+    font-size: 20px;
+  }
+}
+
+@media screen and (max-width: 440px) {
+  .infoTooltip {
+    margin: 25px 0 16px;
+  }
+
+  .infoTooltip__text {
+    margin-top: 25px;
+  }
+}

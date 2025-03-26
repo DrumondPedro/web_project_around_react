@@ -1,20 +1,29 @@
 import { useContext, useRef, useState } from 'react';
 
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import { LocalDataContext } from '../../contexts/LocalDataContext';
 import { LoginContext } from '../../contexts/LoginContext';
 import { LoadingContext } from '../../contexts/LoadingContext';
 
+import { PopupContext } from '../../contexts/PopupContext';
+
+import Popup from '../Main/components/Popup/Popup';
+import InfoTooltip from '../InfoTooltip/InfoTooltip';
+
 function Signin() {
   const { handleUserInfo, handleUserEmail } = useContext(CurrentUserContext);
   const { TokenInfo } = useContext(LocalDataContext);
-  const { handleLogin } = useContext(LoginContext);
+  const { handleLogin, setIsloggedIn } = useContext(LoginContext);
   const { isLoading, setIsLoading } = useContext(LoadingContext);
+  const { popup, handleOpenPopup } = useContext(PopupContext);
 
   const emailRef = useRef();
   const passwordRef = useRef();
+
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const [signinData, setSigninData] = useState({ email: '', password: '' });
 
@@ -28,6 +37,11 @@ function Signin() {
   });
   const [isActive, setIsActive] = useState(false);
 
+  const editInfoTooltipError = {
+    title: ' ',
+    children: <InfoTooltip isSuccess={false} />,
+  };
+
   const handleEmailChange = (evt) => {
     setSigninData({ ...signinData, email: evt.target.value });
     setIsValid({
@@ -39,7 +53,7 @@ function Signin() {
       emailMsg: emailRef.current.validationMessage,
     });
     setIsActive(
-      emailRef.current.validity.valid && emailRef.current.validity.valid
+      emailRef.current.validity.valid && passwordRef.current.validity.valid
     );
   };
 
@@ -54,22 +68,31 @@ function Signin() {
       passwordMsg: passwordRef.current.validationMessage,
     });
     setIsActive(
-      emailRef.current.validity.valid && emailRef.current.validity.valid
+      emailRef.current.validity.valid && passwordRef.current.validity.valid
     );
   };
 
   async function handleSubimit(evt) {
+    evt.preventDefault();
     if (!signinData.email || !signinData.password) {
+      handleOpenPopup(editInfoTooltipError);
       return;
     }
 
-    evt.preventDefault();
-    setIsLoading(true);
-    const { token } = await handleLogin(signinData);
-    TokenInfo.set(token);
-    handleUserInfo();
-    handleUserEmail(token);
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      const { token } = await handleLogin(signinData);
+      TokenInfo.set(token);
+      await handleUserEmail(token);
+      await handleUserInfo();
+      setIsloggedIn(true);
+      const redirectPath = location.state?.from?.pathname || '/';
+      navigate(redirectPath);
+    } catch (error) {
+      handleOpenPopup(editInfoTooltipError);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -134,6 +157,7 @@ function Signin() {
           Inscreva-se aqui!
         </Link>
       </p>
+      {popup && <Popup title={popup.title}>{popup.children}</Popup>}
     </section>
   );
 }

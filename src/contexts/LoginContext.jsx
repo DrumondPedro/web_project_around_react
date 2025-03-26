@@ -1,35 +1,29 @@
 import { createContext, useState } from 'react';
 
 import auth from '../utils/auth';
-import { useLocation, useNavigate } from 'react-router-dom';
 
 export const LoginContext = createContext();
 
 export function LoginProvider({ children }) {
   const [isLoggedIn, setIsloggedIn] = useState(false);
 
-  const navigate = useNavigate();
-  const location = useLocation();
-
   const handleRegister = async (registerData) => {
     try {
       const data = await auth.register('/signup', registerData);
-      navigate('/signin');
       return;
-    } catch (err) {
-      console.log(`${err} - Erro no POST /signup`);
+    } catch (error) {
+      console.log(`POST /signup`, error);
+      throw error;
     }
   };
 
   const handleLogin = async (loginData) => {
     try {
       const token = await auth.authorize('/signin', loginData);
-      setIsloggedIn(true);
-      const redirectPath = location.state?.from?.pathname || '/';
-      navigate(redirectPath);
       return token;
-    } catch (err) {
-      console.log(`${err} - Erro no POST /signin`);
+    } catch (error) {
+      console.log(`POST /signin`, error);
+      throw error;
     }
   };
 

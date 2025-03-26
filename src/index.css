@@ -22,4 +22,6 @@
 
 @import url('./blocks/viewer.css');
 
+@import url('./blocks/infoTooltip.css');
+
 @import url('./blocks/footer.css');

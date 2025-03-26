@@ -1,13 +1,20 @@
 import { useContext, useRef, useState } from 'react';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { LoginContext } from '../../contexts/LoginContext';
 import { LoadingContext } from '../../contexts/LoadingContext';
+import { PopupContext } from '../../contexts/PopupContext';
+
+import Popup from '../Main/components/Popup/Popup';
+import InfoTooltip from '../InfoTooltip/InfoTooltip';
 
 function Signup() {
   const { handleRegister } = useContext(LoginContext);
   const { isLoading, setIsLoading } = useContext(LoadingContext);
+  const { popup, handleOpenPopup } = useContext(PopupContext);
+
+  const navigate = useNavigate();
 
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -24,6 +31,16 @@ function Signup() {
   });
   const [isActive, setIsActive] = useState(false);
 
+  const editInfoTooltipError = {
+    title: ' ',
+    children: <InfoTooltip isSuccess={false} />,
+  };
+
+  const editInfoTooltipSuccess = {
+    title: ' ',
+    children: <InfoTooltip isSuccess={true} />,
+  };
+
   const handleEmailChange = (evt) => {
     setSignupData({ ...signupData, email: evt.target.value });
     setIsValid({
@@ -35,7 +52,7 @@ function Signup() {
       emailMsg: emailRef.current.validationMessage,
     });
     setIsActive(
-      emailRef.current.validity.valid && emailRef.current.validity.valid
+      emailRef.current.validity.valid && passwordRef.current.validity.valid
     );
   };
 
@@ -50,15 +67,28 @@ function Signup() {
       passwordMsg: passwordRef.current.validationMessage,
     });
     setIsActive(
-      emailRef.current.validity.valid && emailRef.current.validity.valid
+      emailRef.current.validity.valid && passwordRef.current.validity.valid
     );
   };
 
   async function handleSubimit(evt) {
     evt.preventDefault();
-    setIsLoading(true);
-    await handleRegister(signupData);
-    setIsLoading(false);
+
+    if (!signupData.email || !signupData.password) {
+      handleOpenPopup(editInfoTooltipError);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      await handleRegister(signupData);
+      handleOpenPopup(editInfoTooltipSuccess);
+      navigate('/signin');
+    } catch (error) {
+      handleOpenPopup(editInfoTooltipError);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -123,6 +153,7 @@ function Signup() {
           Faça o login aqui!
         </Link>
       </p>
+      {popup && <Popup title={popup.title}>{popup.children}</Popup>}
     </section>
   );
 }
