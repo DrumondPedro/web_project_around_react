@@ -57,7 +57,7 @@ function Card({ card }) {
         setCurrentCard(res);
       });
     } else {
-      await awaithandleCardLike(currentCard._id, (res) => {
+      await handleCardLike(currentCard._id, (res) => {
         setCurrentCard(res);
       });
     }
