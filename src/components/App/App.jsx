@@ -19,9 +19,14 @@ function App() {
   const { setIsloggedIn } = useContext(LoginContext);
 
   async function handleAutomaticLogin(token) {
-    await handleUserInfo();
-    await handleUserEmail(token);
-    setIsloggedIn(true);
+    try {
+      await handleUserEmail(token);
+      await handleUserInfo();
+      setIsloggedIn(true);
+    } catch (error) {
+      TokenInfo.remove();
+      console.log('GET - Automatic Login', error);
+    }
   }
 
   useEffect(() => {

@@ -28,6 +28,7 @@ export function CurrentUserProvider({ children }) {
       setCurrentUser(userData);
     } catch (error) {
       console.log('GET - /users/me', error);
+      throw error;
     }
   };
 
@@ -37,6 +38,7 @@ export function CurrentUserProvider({ children }) {
       setUserEmail(userEmailData);
     } catch (error) {
       console.log('GET - /users/me', error);
+      throw error;
     }
   };
 
