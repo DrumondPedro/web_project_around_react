@@ -39,6 +39,7 @@ function Signup() {
   const editInfoTooltipSuccess = {
     title: ' ',
     children: <InfoTooltip isSuccess={true} />,
+    handleNavigate: () => navigate('/signin'),
   };
 
   const handleEmailChange = (evt) => {
@@ -83,7 +84,6 @@ function Signup() {
       setIsLoading(true);
       await handleRegister(signupData);
       handleOpenPopup(editInfoTooltipSuccess);
-      navigate('/signin');
     } catch (error) {
       handleOpenPopup(editInfoTooltipError);
     } finally {
@@ -153,7 +153,11 @@ function Signup() {
           Faça o login aqui!
         </Link>
       </p>
-      {popup && <Popup title={popup.title}>{popup.children}</Popup>}
+      {popup && (
+        <Popup title={popup.title} handleNavigate={popup.handleNavigate}>
+          {popup.children}
+        </Popup>
+      )}
     </section>
   );
 }
